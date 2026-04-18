@@ -1,4 +1,4 @@
-﻿namespace Regul.Enums;
+namespace Regul.Enums;
 
 public enum TypeDrop
 {

@@ -1,10 +1,11 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using PleasantUI;
+using ReactiveUI;
 
 namespace Regul.Structures;
 
-public class Project : ViewModelBase
+public class Project : ReactiveObject
 {
     private string _idEditor = string.Empty;
     private string _path = string.Empty;
@@ -15,7 +16,7 @@ public class Project : ViewModelBase
     public string Path
     {
         get => _path;
-        set => RaiseAndSetIfChanged(ref _path, value);
+        set => this.RaiseAndSetIfChanged(ref _path, value);
     }
 
     [XmlAttribute]
@@ -23,7 +24,7 @@ public class Project : ViewModelBase
     public string IdEditor
     {
         get => _idEditor;
-        set => RaiseAndSetIfChanged(ref _idEditor, value);
+        set => this.RaiseAndSetIfChanged(ref _idEditor, value);
     }
 
     [XmlAttribute]
@@ -31,7 +32,7 @@ public class Project : ViewModelBase
     public string DateTime
     {
         get => _dateTime;
-        set => RaiseAndSetIfChanged(ref _dateTime, value);
+        set => this.RaiseAndSetIfChanged(ref _dateTime, value);
     }
 
     public Project()

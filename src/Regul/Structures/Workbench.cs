@@ -1,9 +1,10 @@
-﻿using PleasantUI;
+using PleasantUI;
+using ReactiveUI;
 using Regul.Interfaces;
 
 namespace Regul.Structures;
 
-public class Workbench : ViewModelBase
+public class Workbench : ReactiveObject
 {
     private string? _pathToFile;
     private bool _isDirty;
@@ -16,7 +17,7 @@ public class Workbench : ViewModelBase
     public string? PathToFile
     {
         get => _pathToFile;
-        set => RaiseAndSetIfChanged(ref _pathToFile, value);
+        set => this.RaiseAndSetIfChanged(ref _pathToFile, value);
     }
 
     /// <summary>
@@ -25,7 +26,7 @@ public class Workbench : ViewModelBase
     public bool IsDirty
     {
         get => _isDirty;
-        set => RaiseAndSetIfChanged(ref _isDirty, value);
+        set => this.RaiseAndSetIfChanged(ref _isDirty, value);
     }
     /// <summary>
     /// Editor's logic. It should be a ViewModel.
@@ -33,12 +34,12 @@ public class Workbench : ViewModelBase
     public IEditorViewModel? EditorViewModel
     {
         get => _editorViewModel;
-        set => RaiseAndSetIfChanged(ref _editorViewModel, value);
+        set => this.RaiseAndSetIfChanged(ref _editorViewModel, value);
     }
 
     public string EditorId
     {
         get => _editorId;
-        set => RaiseAndSetIfChanged(ref _editorId, value);
+        set => this.RaiseAndSetIfChanged(ref _editorId, value);
     }
 }

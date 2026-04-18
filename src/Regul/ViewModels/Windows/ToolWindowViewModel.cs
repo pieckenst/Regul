@@ -1,14 +1,14 @@
-﻿using Avalonia.Collections;
+using System.Reactive.Linq;
+using Avalonia.Collections;
 using PleasantUI;
 using PleasantUI.Controls;
-using PleasantUI.Extensions;
-using PleasantUI.Reactive;
+using ReactiveUI;
 using Regul.ModuleSystem;
 using Regul.ModuleSystem.Structures;
 
 namespace Regul.ViewModels.Windows;
 
-public class ToolWindowViewModel : ViewModelBase
+public class ToolWindowViewModel : ReactiveObject
 {
     private Module? _selectedModule;
     private Instrument? _selectedInstrument;
@@ -24,33 +24,33 @@ public class ToolWindowViewModel : ViewModelBase
     public Module? SelectedModule
     {
         get => _selectedModule;
-        set => RaiseAndSetIfChanged(ref _selectedModule, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedModule, value);
     }
     public Instrument? SelectedInstrument
     {
         get => _selectedInstrument;
-        set => RaiseAndSetIfChanged(ref _selectedInstrument, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedInstrument, value);
     }
 
     public string ModuleNameSearching
     {
         get => _moduleNameSearching;
-        set => RaiseAndSetIfChanged(ref _moduleNameSearching, value);
+        set => this.RaiseAndSetIfChanged(ref _moduleNameSearching, value);
     }
     public string InstrumentNameSearching
     {
         get => _instrumentNameSearching;
-        set => RaiseAndSetIfChanged(ref _instrumentNameSearching, value);
+        set => this.RaiseAndSetIfChanged(ref _instrumentNameSearching, value);
     }
     public bool InvertModuleList
     {
         get => _invertModuleList;
-        set => RaiseAndSetIfChanged(ref _invertModuleList, value);
+        set => this.RaiseAndSetIfChanged(ref _invertModuleList, value);
     }
     public bool InvertInstrumentList
     {
         get => _invertInstrumentList;
-        set => RaiseAndSetIfChanged(ref _invertInstrumentList, value);
+        set => this.RaiseAndSetIfChanged(ref _invertInstrumentList, value);
     }
 
     public int? ModulesWithInstrumentsCount { get; set; }
@@ -79,7 +79,7 @@ public class ToolWindowViewModel : ViewModelBase
                 if (module?.Instance.Instruments is not null)
                 {
                     InstrumentsInModuleCount = module.Instance.Instruments.Count;
-                    RaisePropertyChanged(nameof(InstrumentsInModuleCount));
+                    this.RaisePropertyChanged(nameof(InstrumentsInModuleCount));
                 }
             });
     }
@@ -95,7 +95,7 @@ public class ToolWindowViewModel : ViewModelBase
         if (ModulesWithInstrumentsCount is null)
         {
             ModulesWithInstrumentsCount = list.Count;
-            RaisePropertyChanged(nameof(ModulesWithInstrumentsCount));
+            this.RaisePropertyChanged(nameof(ModulesWithInstrumentsCount));
         }
 
         if (!string.IsNullOrWhiteSpace(ModuleNameSearching))
@@ -131,9 +131,8 @@ public class ToolWindowViewModel : ViewModelBase
     public void CloseWithInstrument(ContentDialog contentDialog)
     {
         SelectedInstrument?.Execute.Invoke();
-
-        contentDialog.Close();
+        contentDialog.CloseAsync();
     }
 
-    public void Close(ContentDialog contentDialog) => contentDialog.Close();
+    public void Close(ContentDialog contentDialog) => contentDialog.CloseAsync();
 }

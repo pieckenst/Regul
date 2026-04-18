@@ -1,4 +1,4 @@
-﻿using Avalonia.Collections;
+using Avalonia.Collections;
 using Avalonia.Media;
 using Regul.ModuleSystem.Structures;
 

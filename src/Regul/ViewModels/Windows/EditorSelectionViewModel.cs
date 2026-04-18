@@ -1,14 +1,13 @@
-﻿using Avalonia.Collections;
+using Avalonia.Collections;
 using PleasantUI;
 using PleasantUI.Controls;
-using PleasantUI.Extensions;
-using PleasantUI.Reactive;
+using ReactiveUI;
 using Regul.ModuleSystem;
 using Regul.ModuleSystem.Structures;
 
 namespace Regul.ViewModels.Windows;
 
-public class EditorSelectionViewModel : ViewModelBase
+public class EditorSelectionViewModel : ReactiveObject
 {
     private Editor? _selectedEditor;
 
@@ -20,18 +19,18 @@ public class EditorSelectionViewModel : ViewModelBase
     public Editor? SelectedEditor
     {
         get => _selectedEditor;
-        set => RaiseAndSetIfChanged(ref _selectedEditor, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedEditor, value);
     }
 
     public bool InvertEditorList
     {
         get => _invertEditorList;
-        set => RaiseAndSetIfChanged(ref _invertEditorList, value);
+        set => this.RaiseAndSetIfChanged(ref _invertEditorList, value);
     }
     public string EditorNameSearching
     {
         get => _editorNameSearching;
-        set => RaiseAndSetIfChanged(ref _editorNameSearching, value);
+        set => this.RaiseAndSetIfChanged(ref _editorNameSearching, value);
     }
 
     public EditorSelectionViewModel()
@@ -57,7 +56,7 @@ public class EditorSelectionViewModel : ViewModelBase
         SortedEditors.AddRange(list);
     }
 
-    public void CloseWithEditor(ContentDialog contentDialog) => contentDialog.Close(SelectedEditor);
+    public void CloseWithEditor(ContentDialog contentDialog) => contentDialog.CloseAsync(SelectedEditor);
 
-    public void Close(ContentDialog contentDialog) => contentDialog.Close(null);
+    public void Close(ContentDialog contentDialog) => contentDialog.CloseAsync(null);
 }

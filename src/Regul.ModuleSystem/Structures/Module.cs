@@ -1,12 +1,12 @@
-﻿using McMaster.NETCore.Plugins;
-using PleasantUI;
+using McMaster.NETCore.Plugins;
+using ReactiveUI;
 
 namespace Regul.ModuleSystem.Structures;
 
 /// <summary>
 /// The class that contains the module instance itself and its assembly
 /// </summary>
-public class Module : ViewModelBase
+public class Module : ReactiveObject
 {
     private IModule _instance = null!;
     private string? _linkToUpdate;
@@ -14,44 +14,44 @@ public class Module : ViewModelBase
     private bool _readyUpgrade;
     private Version? _newVersion;
     private Version? _regulVersionRequiered;
-    private PluginLoader _pluginLoader;
+    private PluginLoader _pluginLoader = null!;
 
     public IModule Instance
     {
         get => _instance;
-        private init => RaiseAndSetIfChanged(ref _instance, value);
+        private init => this.RaiseAndSetIfChanged(ref _instance, value);
     }
 
     public PluginLoader PluginLoader
     {
         get => _pluginLoader;
-        set => RaiseAndSetIfChanged(ref _pluginLoader, value);
+        set => this.RaiseAndSetIfChanged(ref _pluginLoader, value);
     }
 
     public string? LinkToUpdate
     {
         get => _linkToUpdate;
-        set => RaiseAndSetIfChanged(ref _linkToUpdate, value);
+        set => this.RaiseAndSetIfChanged(ref _linkToUpdate, value);
     }
     public bool HasUpdate
     {
         get => _hasUpdate;
-        set => RaiseAndSetIfChanged(ref _hasUpdate, value);
+        set => this.RaiseAndSetIfChanged(ref _hasUpdate, value);
     }
     public bool ReadyUpgrade
     {
         get => _readyUpgrade;
-        set => RaiseAndSetIfChanged(ref _readyUpgrade, value);
+        set => this.RaiseAndSetIfChanged(ref _readyUpgrade, value);
     }
     public Version? NewVersion
     {
         get => _newVersion;
-        set => RaiseAndSetIfChanged(ref _newVersion, value);
+        set => this.RaiseAndSetIfChanged(ref _newVersion, value);
     }
     public Version? RegulVersionRequiered
     {
         get => _regulVersionRequiered;
-        set => RaiseAndSetIfChanged(ref _regulVersionRequiered, value);
+        set => this.RaiseAndSetIfChanged(ref _regulVersionRequiered, value);
     }
 
     public Module(IModule instance, PluginLoader pluginLoader)

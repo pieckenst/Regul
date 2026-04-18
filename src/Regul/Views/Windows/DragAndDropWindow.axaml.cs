@@ -1,11 +1,11 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using PleasantUI.Controls;
 using Regul.Enums;
 
 namespace Regul.Views.Windows;
 
-public class DragAndDropWindow : ContentDialog
+public partial class DragAndDropWindow : ContentDialog
 {
     private readonly Grid? _moduleTypeGrid;
     private readonly Grid? _fileTypeGrid;

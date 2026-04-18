@@ -8,9 +8,7 @@ using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using PleasantUI;
-using PleasantUI.Enums;
-using PleasantUI.Media;
-using PleasantUI.Other;
+using PleasantUI.Core;
 using Regul.CrashReport.ViewModels;
 using Regul.CrashReport.Views;
 using Regul.Enums;
@@ -36,18 +34,49 @@ public class App : Application
 
     public override void Initialize()
     {
-        AvaloniaXamlLoader.Load(this);
+        System.Diagnostics.Debug.WriteLine("[App] Initialize() START");
+        try
+        {
+            AvaloniaXamlLoader.Load(this);
+            System.Diagnostics.Debug.WriteLine("[App] AvaloniaXamlLoader.Load() OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[App] AvaloniaXamlLoader.Load() FAILED: {ex}");
+            throw;
+        }
 
 #if DEBUG
         DataTemplates.Add(new ViewLocator());
 #endif
 
         Current?.Styles.Add(ModulesLanguage);
+        System.Diagnostics.Debug.WriteLine("[App] ModulesLanguage added to Styles");
 
         PleasantTheme = (Current?.Styles[0] as PleasantTheme)!;
+        System.Diagnostics.Debug.WriteLine($"[App] PleasantTheme = {PleasantTheme?.GetType().Name ?? "NULL"}");
 
-        InitializeTheme();
-        InitializeLanguage();
+        try
+        {
+            InitializeTheme();
+            System.Diagnostics.Debug.WriteLine("[App] InitializeTheme() OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[App] InitializeTheme() FAILED: {ex}");
+            throw;
+        }
+
+        try
+        {
+            InitializeLanguage();
+            System.Diagnostics.Debug.WriteLine("[App] InitializeLanguage() OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[App] InitializeLanguage() FAILED: {ex}");
+            throw;
+        }
 
 #if DEBUG
         if (Design.IsDesignMode) return;
@@ -62,6 +91,7 @@ public class App : Application
         UpdateModules();
 
         LoadModules(Directory.EnumerateFiles(RegulDirectories.Modules, "*.dll", SearchOption.AllDirectories));
+        System.Diagnostics.Debug.WriteLine("[App] Initialize() END");
     }
 
     public static void UpdateModules()
@@ -104,26 +134,24 @@ public class App : Application
 
     private void InitializeTheme()
     {
-        if (PleasantUiSettings.Instance.ThemeMode == PleasantThemeMode.Custom)
+        if (PleasantSettings.Current?.Theme == "Custom")
         {
-            List<Theme> themes = new();
-
-            if (Directory.Exists(Directories.Themes))
+            if (Directory.Exists(RegulDirectories.Themes))
             {
-                foreach (string path in Directory.EnumerateFiles(Directories.Themes, "*.style"))
+                foreach (string path in Directory.EnumerateFiles(RegulDirectories.Themes, "*.json"))
                 {
-                    using FileStream fileStream = File.OpenRead(path);
-                    themes.Add(Theme.LoadFromJson(fileStream));
+                    try
+                    {
+                        using FileStream fs = File.OpenRead(path);
+                        var theme = System.Text.Json.JsonSerializer.Deserialize<PleasantUI.Core.Models.CustomTheme>(fs);
+                        if (theme is not null)
+                            PleasantTheme.CustomThemes.Add(theme);
+                    }
+                    catch { /* ignored */ }
                 }
             }
 
-            Theme? theme = themes.FirstOrDefault(t => t.Name == PleasantUiSettings.Instance.CustomThemeModeName);
-
-            if (theme is not null)
-            {
-                (theme, _) = PleasantTheme.CompareWithDefaultTheme(theme);
-                PleasantTheme.CustomTheme = theme;
-            }
+            PleasantTheme.SelectedCustomTheme = PleasantTheme.CustomThemes.FirstOrDefault();
         }
     }
 
@@ -266,29 +294,49 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        System.Diagnostics.Debug.WriteLine("[App] OnFrameworkInitializationCompleted() START");
         if (!ApplicationSettings.Current.HardwareAcceleration)
-            PleasantUiSettings.Instance.EnableTransparency = false;
+            if (PleasantSettings.Current is not null)
+                PleasantSettings.Current.WindowSettings.EnableBlur = false;
 
-        if (ApplicationSettings.Current.ExceptionCalled)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            System.Diagnostics.Debug.WriteLine($"[App] IsCrashReport={Program.IsCrashReport}, ExceptionCalled={ApplicationSettings.Current.ExceptionCalled}");
+            if (Program.IsCrashReport)
             {
+                System.Diagnostics.Debug.WriteLine("[App] Showing CrashReportWindow (IsCrashReport)");
+                desktop.MainWindow = new CrashReportWindow
+                {
+                    DataContext = new CrashReportViewModel(Program.CrashReportText)
+                };
+            }
+            else if (ApplicationSettings.Current.ExceptionCalled)
+            {
+                System.Diagnostics.Debug.WriteLine("[App] Showing CrashReportWindow (ExceptionCalled)");
                 desktop.MainWindow = new CrashReportWindow
                 {
                     DataContext = new CrashReportViewModel(ApplicationSettings.Current.ExceptionText)
                 };
             }
-        }
-        else
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            else
             {
-                WindowsManager.MainWindow = new MainWindow();
-                desktop.MainWindow = WindowsManager.MainWindow;
+                System.Diagnostics.Debug.WriteLine("[App] Creating MainWindow");
+                try
+                {
+                    WindowsManager.MainWindow = new MainWindow();
+                    desktop.MainWindow = WindowsManager.MainWindow;
+                    System.Diagnostics.Debug.WriteLine("[App] MainWindow created OK");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[App] MainWindow creation FAILED: {ex}");
+                    throw;
+                }
             }
         }
 
         base.OnFrameworkInitializationCompleted();
+        System.Diagnostics.Debug.WriteLine("[App] OnFrameworkInitializationCompleted() END");
     }
 
     /// <summary>

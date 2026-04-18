@@ -1,4 +1,4 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -6,16 +6,16 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
+using Avalonia.Input.Platform;
 using Avalonia.Media;
-using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using PleasantUI;
-using PleasantUI.Enums;
-using PleasantUI.Extensions;
-using PleasantUI.Media;
-using PleasantUI.Other;
-using PleasantUI.Reactive;
-using PleasantUI.Windows;
+using PleasantUI.Controls;
+using PleasantUI.Controls.Chrome;
+using PleasantUI.Core.Models;
+using PleasantUI.Core.Structures;
+using PleasantUI.ToolKit;
+using ReactiveUI;
 using Regul.Enums;
 using Regul.Helpers;
 using Regul.Logging;
@@ -25,17 +25,19 @@ using Regul.ModuleSystem.Structures;
 using Regul.Other;
 using Regul.Structures;
 using Regul.Views.Pages;
+using TitleBarType = PleasantUI.Controls.Chrome.PleasantTitleBar.Type;
 using Language = Regul.Structures.Language;
+using PleasantUI.Core;
 
 namespace Regul.ViewModels.Pages;
 
-public class SettingsPageViewModel : ViewModelBase
+public class SettingsPageViewModel : ReactiveObject
 {
     private readonly SynchronizationContext? _synchronizationContext = SynchronizationContext.Current;
 
     private Module? _selectedModule;
 
-    private Theme? _selectedTheme;
+    private CustomTheme? _selectedTheme;
     private bool _inRenameProcess;
     private string _renameText = string.Empty;
 
@@ -57,7 +59,7 @@ public class SettingsPageViewModel : ViewModelBase
 
     public string DotNetInformation { get; } = $"{RuntimeInformation.FrameworkDescription} {RuntimeInformation.ProcessArchitecture}";
 
-    public AvaloniaList<Theme> Themes { get; } = new();
+    public AvaloniaList<CustomTheme> Themes { get; } = new();
     public AvaloniaList<FontFamily> Fonts { get; } = new();
     public AvaloniaList<Module> SortedModules { get; } = new();
     public AvaloniaList<EditorRelatedExtension> SortedEditorRelatedExtensions { get; } = new();
@@ -65,18 +67,18 @@ public class SettingsPageViewModel : ViewModelBase
     public Module? SelectedModule
     {
         get => _selectedModule;
-        set => RaiseAndSetIfChanged(ref _selectedModule, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedModule, value);
     }
 
     public bool InRenameProcess
     {
         get => _inRenameProcess;
-        set => RaiseAndSetIfChanged(ref _inRenameProcess, value);
+        set => this.RaiseAndSetIfChanged(ref _inRenameProcess, value);
     }
     public string RenameText
     {
         get => _renameText;
-        set => RaiseAndSetIfChanged(ref _renameText, value);
+        set => this.RaiseAndSetIfChanged(ref _renameText, value);
     }
 
     public string DecryptedVirusTotalApiKey
@@ -97,7 +99,7 @@ public class SettingsPageViewModel : ViewModelBase
             if (string.IsNullOrWhiteSpace(ApplicationSettings.Current.VirusTotalApiKey) || DecryptedVirusTotalApiKey.Length < 64 && ScanForVirus)
             {
                 ScanForVirus = false;
-                RaisePropertyChanged(nameof(ScanForVirus));
+                this.RaisePropertyChanged(nameof(ScanForVirus));
             }
         }
     }
@@ -110,14 +112,14 @@ public class SettingsPageViewModel : ViewModelBase
             if (value && string.IsNullOrWhiteSpace(ApplicationSettings.Current.VirusTotalApiKey))
             {
                 WindowsManager.MainWindow?.ShowNotification("YouNeedToEnterVirusTotalApiKey", NotificationType.Error, TimeSpan.FromSeconds(3));
-                RaisePropertyChanged();
+                this.RaisePropertyChanged();
                 return;
             }
 
             if (value && DecryptedVirusTotalApiKey.Length < 64)
             {
                 WindowsManager.MainWindow?.ShowNotification("ApiKeyIsTooShort", NotificationType.Error, TimeSpan.FromSeconds(3));
-                RaisePropertyChanged();
+                this.RaisePropertyChanged();
                 return;
             }
 
@@ -128,27 +130,27 @@ public class SettingsPageViewModel : ViewModelBase
     public string ModuleNameSearching
     {
         get => _moduleNameSearching;
-        set => RaiseAndSetIfChanged(ref _moduleNameSearching, value);
+        set => this.RaiseAndSetIfChanged(ref _moduleNameSearching, value);
     }
     public string EditorRelatedExtensionSearching
     {
         get => _editorRelatedExtension;
-        set => RaiseAndSetIfChanged(ref _editorRelatedExtension, value);
+        set => this.RaiseAndSetIfChanged(ref _editorRelatedExtension, value);
     }
     public string ExtensionSearching
     {
         get => _extensionSearching;
-        set => RaiseAndSetIfChanged(ref _extensionSearching, value);
+        set => this.RaiseAndSetIfChanged(ref _extensionSearching, value);
     }
     public bool InvertModuleList
     {
         get => _invertModuleList;
-        set => RaiseAndSetIfChanged(ref _invertModuleList, value);
+        set => this.RaiseAndSetIfChanged(ref _invertModuleList, value);
     }
     public bool InvertEditorRelatedExtensionList
     {
         get => _invertEditorRelatedExtensionList;
-        set => RaiseAndSetIfChanged(ref _invertEditorRelatedExtensionList, value);
+        set => this.RaiseAndSetIfChanged(ref _invertEditorRelatedExtensionList, value);
     }
 
     public bool IsSupportedOperatingSystem
@@ -175,41 +177,31 @@ public class SettingsPageViewModel : ViewModelBase
         }
     }
 
-    public Theme? SelectedTheme
+    public CustomTheme? SelectedTheme
     {
         get => _selectedTheme;
         set
         {
-            RaiseAndSetIfChanged(ref _selectedTheme, value);
+            this.RaiseAndSetIfChanged(ref _selectedTheme, value);
             
-            App.PleasantTheme.CustomTheme = value;
-            PleasantUiSettings.Instance.CustomThemeModeName = value?.Name;
+            PleasantTheme.SelectedCustomTheme = value;
+            PleasantSettings.Current!.Theme = value is not null ? "Custom" : "System";
         }
     }
 
     public FontFamily SelectedFont
     {
-        get => FontFamily.Parse(PleasantUiSettings.Instance.FontName);
-        set => PleasantUiSettings.Instance.FontName = value.Name;
+        get => FontFamily.Default;
+        set { /* font selection not supported in this PleasantUI version */ }
     }
 
     public int SelectedIndexBlurType
     {
-        get
-        {
-            return PleasantUiSettings.Instance.BlurMode switch
-            {
-                WindowTransparencyLevel.Blur => 1,
-                _ => 0
-            };
-        }
+        get => PleasantSettings.Current?.WindowSettings.EnableBlur == true ? 1 : 0;
         set
         {
-            PleasantUiSettings.Instance.BlurMode = value switch
-            {
-                1 => WindowTransparencyLevel.Blur,
-                _ => WindowTransparencyLevel.Mica
-            };
+            if (PleasantSettings.Current is not null)
+                PleasantSettings.Current.WindowSettings.EnableBlur = value == 1;
         }
     }
 
@@ -243,28 +235,38 @@ public class SettingsPageViewModel : ViewModelBase
     {
         get
         {
-            return PleasantUiSettings.Instance.ThemeMode switch
+            return PleasantSettings.Current!.Theme switch
             {
-                PleasantThemeMode.Light => 1,
-                PleasantThemeMode.Dark => 2,
-                PleasantThemeMode.Mysterious => 3,
-                PleasantThemeMode.Emerald => 4,
-                PleasantThemeMode.Turquoise => 5,
-                PleasantThemeMode.Custom => 6,
+                "Light" => 1,
+                "Dark" => 2,
+                "Mint" => 3,
+                "Strawberry" => 4,
+                "Ice" => 5,
+                "Sunny" => 6,
+                "Spruce" => 7,
+                "Cherry" => 8,
+                "Cave" => 9,
+                "Lunar" => 10,
+                "Custom" => 11,
                 _ => 0
             };
         }
         set
         {
-            PleasantUiSettings.Instance.ThemeMode = value switch
+            PleasantSettings.Current!.Theme = value switch
             {
-                1 => PleasantThemeMode.Light,
-                2 => PleasantThemeMode.Dark,
-                3 => PleasantThemeMode.Mysterious,
-                4 => PleasantThemeMode.Emerald,
-                5 => PleasantThemeMode.Turquoise,
-                6 => PleasantThemeMode.Custom,
-                _ => PleasantThemeMode.System
+                1 => "Light",
+                2 => "Dark",
+                3 => "Mint",
+                4 => "Strawberry",
+                5 => "Ice",
+                6 => "Sunny",
+                7 => "Spruce",
+                8 => "Cherry",
+                9 => "Cave",
+                10 => "Lunar",
+                11 => "Custom",
+                _ => "System"
             };
         }
     }
@@ -294,13 +296,13 @@ public class SettingsPageViewModel : ViewModelBase
     public bool IsCheckUpdateModules
     {
         get => _isCheckUpdateModules;
-        private set => RaiseAndSetIfChanged(ref _isCheckUpdateModules, value);
+        private set => this.RaiseAndSetIfChanged(ref _isCheckUpdateModules, value);
     }
 
     public bool IsCheckUpdateProgram
     {
         get => _isCheckUpdateProgram;
-        set => RaiseAndSetIfChanged(ref _isCheckUpdateProgram, value);
+        set => this.RaiseAndSetIfChanged(ref _isCheckUpdateProgram, value);
     }
 
     public bool HasUpdateInModules
@@ -313,22 +315,10 @@ public class SettingsPageViewModel : ViewModelBase
         PreviousContent = previousContent;
         PreviousTitleBarType = titleBarType;
 
-        if (Directory.Exists(Directories.Themes))
-        {
-            foreach (string path in Directory.EnumerateFiles(Directories.Themes))
-            {
-                using FileStream fileStream = File.OpenRead(path);
-                Theme theme = Theme.LoadFromJson(fileStream);
-                
-                (theme, _isThemesChanged) = App.PleasantTheme.CompareWithDefaultTheme(theme);
+        foreach (CustomTheme theme in PleasantTheme.CustomThemes)
+            Themes.Add(theme);
 
-                Themes.Add(theme);
-            }
-        }
-
-        App.PleasantTheme.DisableUpdateTheme = true;
-        SelectedTheme = Themes.FirstOrDefault(t => t.Name == PleasantUiSettings.Instance.CustomThemeModeName);
-        App.PleasantTheme.DisableUpdateTheme = false;
+        SelectedTheme = PleasantTheme.SelectedCustomTheme;
 
         foreach (FontFamily font in FontManager.Current.SystemFonts)
             Fonts.Add(font);
@@ -389,21 +379,7 @@ public class SettingsPageViewModel : ViewModelBase
     public void Release()
     {
         if (!_isThemesChanged) return;
-
-        if (!Directory.Exists(Directories.Themes))
-            Directory.CreateDirectory(Directories.Themes);
-
-        foreach (string path in Directory.EnumerateFiles(Directories.Themes))
-            File.Delete(path);
-
-        foreach (Theme theme in Themes)
-        {
-            if (!string.IsNullOrWhiteSpace(theme.Name))
-            {
-                using FileStream fileStream = File.Create(Path.Combine(Directories.Themes, $"{theme.Name}.style"));
-                theme.SaveToJson(fileStream);
-            }
-        }
+        App.PleasantTheme.UpdateCustomThemes();
     }
 
     public async void ResetSettings()
@@ -417,13 +393,12 @@ public class SettingsPageViewModel : ViewModelBase
         SelectedTheme = null;
 
         ApplicationSettings.Reset();
-        PleasantUiSettings.Reset();
 
         App.ChangeLanguage(ApplicationSettings.Current.Language);
 
-        RaisePropertyChanged(nameof(SelectedLanguage));
-        RaisePropertyChanged(nameof(SelectedFont));
-        RaisePropertyChanged(nameof(SelectedIndexMode));
+        this.RaisePropertyChanged(nameof(SelectedLanguage));
+        this.RaisePropertyChanged(nameof(SelectedFont));
+        this.RaisePropertyChanged(nameof(SelectedIndexMode));
 
         WindowsManager.MainWindow.ShowNotification("SettingsHaveBeenReset", NotificationType.Success, TimeSpan.FromSeconds(3));
     }
@@ -434,70 +409,73 @@ public class SettingsPageViewModel : ViewModelBase
     {
         if (WindowsManager.MainWindow is null) return;
 
-        Color? newColor = await ColorPickerWindow.SelectColor(WindowsManager.MainWindow, PleasantUiSettings.Instance.UIntAccentColor);
+        Color? newColor = await ColorPickerWindow.SelectColor(WindowsManager.MainWindow, PleasantSettings.Current!.NumericalAccentColor);
 
         if (newColor is { } color)
-            PleasantUiSettings.Instance.UIntAccentColor = color.ToUint32();
+            PleasantSettings.Current!.NumericalAccentColor = color.ToUInt32();
     }
 
     public async void CopyAccentColor()
     {
-        await Application.Current?.Clipboard?.SetTextAsync($"#{PleasantUiSettings.Instance.UIntAccentColor.ToString("x8").ToUpper()}")!;
+        var clipboard = TopLevel.GetTopLevel(WindowsManager.MainWindow)?.Clipboard;
+        if (clipboard is not null)
+            await ClipboardExtensions.SetTextAsync(clipboard, $"#{PleasantSettings.Current!.NumericalAccentColor.ToString("x8").ToUpper()}");
 
         WindowsManager.MainWindow?.ShowNotification("ColorCopied", timeSpan: TimeSpan.FromSeconds(2));
     }
 
     public async void PasteAccentColor()
     {
-        string? data = await Application.Current?.Clipboard?.GetTextAsync();
+        var clipboard = TopLevel.GetTopLevel(WindowsManager.MainWindow)?.Clipboard;
+        string? data = clipboard is not null ? await ClipboardExtensions.TryGetTextAsync(clipboard) : null;
 
         if (uint.TryParse(data, out uint uintColor))
-            PleasantUiSettings.Instance.UIntAccentColor = uintColor;
+            PleasantSettings.Current!.NumericalAccentColor = uintColor;
         else if (Color.TryParse(data, out Color color))
-            PleasantUiSettings.Instance.UIntAccentColor = color.ToUint32();
+            PleasantSettings.Current!.NumericalAccentColor = color.ToUInt32();
     }
 
-    public async void CopyColor(KeyColor keyColor)
+    public async void CopyColor(string key, uint value)
     {
-        await Application.Current?.Clipboard?.SetTextAsync($"#{keyColor.Value.ToString("x8").ToUpper()}")!;
+        var clipboard = TopLevel.GetTopLevel(WindowsManager.MainWindow)?.Clipboard;
+        if (clipboard is not null)
+            await ClipboardExtensions.SetTextAsync(clipboard, $"#{value.ToString("x8").ToUpper()}");
 
         WindowsManager.MainWindow?.ShowNotification("ColorCopied", timeSpan: TimeSpan.FromSeconds(2));
     }
 
-    public async void PasteColor(KeyColor keyColor)
+    public async void PasteColor(string key)
     {
-        string? data = await Application.Current?.Clipboard?.GetTextAsync();
+        var clipboard = TopLevel.GetTopLevel(WindowsManager.MainWindow)?.Clipboard;
+        string? data = clipboard is not null ? await ClipboardExtensions.TryGetTextAsync(clipboard) : null;
 
         uint newColor;
 
         if (uint.TryParse(data, out uint uintColor))
             newColor = uintColor;
         else if (Color.TryParse(data, out Color color))
-            newColor = color.ToUint32();
+            newColor = color.ToUInt32();
         else return;
 
-        keyColor.Value = newColor;
-        SelectedTheme!.Colors.First(x => x.Key == keyColor.Key).Value = uintColor;
-        _isThemesChanged = true;
-
-        App.PleasantTheme.UpdateCustomTheme();
+        if (SelectedTheme is CustomTheme customTheme && customTheme.Colors.ContainsKey(key))
+        {
+            customTheme.Colors[key] = Color.FromUInt32(newColor);
+            _isThemesChanged = true;
+            App.PleasantTheme.UpdateCustomThemes();
+        }
     }
 
-    public async void ChangeColor(KeyColor keyColor)
+    public async void ChangeColor(string key, uint currentValue)
     {
         if (WindowsManager.MainWindow is null) return;
 
-        Color? newColor = await ColorPickerWindow.SelectColor(WindowsManager.MainWindow, keyColor.Value);
+        Color? newColor = await ColorPickerWindow.SelectColor(WindowsManager.MainWindow, currentValue);
 
-        if (newColor is not null)
+        if (newColor is not null && SelectedTheme is CustomTheme customTheme && customTheme.Colors.ContainsKey(key))
         {
-            uint uintColor = ((Color)newColor).ToUint32();
-
-            keyColor.Value = uintColor;
-            SelectedTheme!.Colors.First(x => x.Key == keyColor.Key).Value = uintColor;
+            customTheme.Colors[key] = (Color)newColor;
             _isThemesChanged = true;
-
-            App.PleasantTheme.UpdateCustomTheme();
+            App.PleasantTheme.UpdateCustomThemes();
         }
     }
 
@@ -523,56 +501,59 @@ public class SettingsPageViewModel : ViewModelBase
 
     public void CreateTheme()
     {
-        Theme theme = App.PleasantTheme.GetTheme(true);
-        theme.Name = CheckAndGetThemeName(theme.Name);
+        var colors = PleasantTheme.GetThemeTemplateDictionary();
+        var custom = new CustomTheme(null, CheckAndGetThemeName("New Theme"), colors);
 
-        Themes.Add(theme);
-        SelectedTheme = theme;
+        PleasantTheme.CustomThemes.Add(custom);
+        Themes.Add(custom);
+        SelectedTheme = custom;
         _isThemesChanged = true;
     }
 
     public void DeleteTheme()
     {
         InRenameProcess = false;
-        Themes.Remove(SelectedTheme!);
+        if (SelectedTheme is CustomTheme customTheme)
+        {
+            PleasantTheme.CustomThemes.Remove(customTheme);
+            Themes.Remove(customTheme);
+        }
         _isThemesChanged = true;
     }
 
     public async void CopyTheme()
     {
-        await Application.Current!.Clipboard!.SetTextAsync(SelectedTheme!.SaveToJson());
+        var clipboard = TopLevel.GetTopLevel(WindowsManager.MainWindow)?.Clipboard;
+        if (SelectedTheme is CustomTheme customTheme && clipboard is not null)
+            await ClipboardExtensions.SetTextAsync(clipboard, System.Text.Json.JsonSerializer.Serialize(customTheme));
 
         WindowsManager.MainWindow?.ShowNotification("ThemeCopied", timeSpan: TimeSpan.FromSeconds(2));
     }
 
     public async void PasteTheme(bool withoutName = false)
     {
-        Theme theme;
+        var clipboard = TopLevel.GetTopLevel(WindowsManager.MainWindow)?.Clipboard;
+        CustomTheme? theme;
 
         try
         {
-            theme = Theme.LoadFromJson(await Application.Current!.Clipboard!.GetTextAsync());
+            string? json = clipboard is not null ? await ClipboardExtensions.TryGetTextAsync(clipboard) : null;
+            theme = System.Text.Json.JsonSerializer.Deserialize<CustomTheme>(json ?? string.Empty);
+            if (theme is null) return;
         }
         catch
         {
             return;
         }
 
-        if (!withoutName)
+        if (SelectedTheme is CustomTheme current)
         {
-            SelectedTheme!.Name = CheckAndGetThemeName(theme.Name);
-            PleasantUiSettings.Instance.CustomThemeModeName = SelectedTheme!.Name;
+            if (!withoutName)
+                current.Name = CheckAndGetThemeName(theme.Name);
+
+            App.PleasantTheme.EditCustomTheme(current, theme);
+            _isThemesChanged = true;
         }
-
-        foreach (KeyColor color in theme.Colors)
-        {
-            KeyColor? keyColor = theme.Colors.FirstOrDefault(x => x.Key == color.Key);
-
-            if (keyColor is not null)
-                color.Value = keyColor.Value;
-        }
-
-        App.PleasantTheme.UpdateCustomTheme();
 
         WindowsManager.MainWindow?.ShowNotification("ThemeAppliedFromClipboard", timeSpan: TimeSpan.FromSeconds(2));
     }
@@ -585,8 +566,11 @@ public class SettingsPageViewModel : ViewModelBase
             return;
         }
 
-        SelectedTheme!.Name = CheckAndGetThemeName(RenameText);
-        PleasantUiSettings.Instance.CustomThemeModeName = SelectedTheme!.Name;
+        if (SelectedTheme is CustomTheme customTheme)
+        {
+            customTheme.Name = CheckAndGetThemeName(RenameText);
+            PleasantSettings.Current!.Theme = "Custom";
+        }
         InRenameProcess = false;
         _isThemesChanged = true;
     }
@@ -732,7 +716,7 @@ public class SettingsPageViewModel : ViewModelBase
 
         IsCheckUpdateModules = false;
 
-        RaisePropertyChanged(nameof(HasUpdateInModules));
+        this.RaisePropertyChanged(nameof(HasUpdateInModules));
 
         if (ModuleManager.Modules.Any(x => x.HasUpdate))
             WindowsManager.MainWindow?.ShowNotification("UpdatesAreAvailableForModules", NotificationType.Success, TimeSpan.FromSeconds(4));

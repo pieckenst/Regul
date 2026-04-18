@@ -1,4 +1,4 @@
-﻿using Regul.Enums;
+using Regul.Enums;
 using Regul.Structures;
 
 namespace Regul.Interfaces;

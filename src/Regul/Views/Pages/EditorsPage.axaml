@@ -1,10 +1,9 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Regul.ViewModels"
              xmlns:s="using:Regul.Structures"
-             xmlns:e="using:PleasantUI.Enums"
              xmlns:c="clr-namespace:Regul.Converters"
              xmlns:moduleSystem="clr-namespace:Regul.ModuleSystem;assembly=Regul.ModuleSystem"
              xmlns:views="clr-namespace:Regul.Views"
@@ -23,7 +22,7 @@
                HorizontalAlignment="Left">
             <Button x:Name="GlobalMenu"
                     Classes="EnabledIconAnimation"
-                    Theme="{StaticResource AppBarButtonTheme}"
+                    Theme="{DynamicResource AppBarButtonTheme}"
                     Padding="7"
                     Margin="10 0 0 0"
                     VerticalAlignment="Center"
@@ -33,7 +32,7 @@
                         <Grid RowDefinitions="Auto,*,Auto">
                             <TextBlock Grid.Row="0"
                                        Margin="20 15 0 0"
-                                       Theme="{StaticResource SubtitleTextBlockTheme}"
+                                       Theme="{DynamicResource SubtitleTextBlockTheme}"
                                        HorizontalAlignment="Left"
                                        Text="{StaticResource Menu}" />
                             <StackPanel Grid.Row="0"
@@ -66,7 +65,7 @@
                                                 <Run Text="{StaticResource NewProject}" />
                                                 &#8203;
                                                 <Run Text="(Ctrl+N)"
-                                                     Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                     Foreground="{DynamicResource TextFillColor3}" />
                                             </TextBlock>
                                         </ToolTip.Tip>
                                         <Viewbox Width="16" Height="16">
@@ -90,7 +89,7 @@
                                                 <Run Text="{StaticResource OpenFile}" />
                                                 &#8203;
                                                 <Run Text="(Ctrl+O)"
-                                                     Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                     Foreground="{DynamicResource TextFillColor3}" />
                                             </TextBlock>
                                         </ToolTip.Tip>
                                         <Viewbox Width="16" Height="16">
@@ -135,7 +134,7 @@
                                                     <Run Text="{StaticResource Save}" />
                                                     &#8203;
                                                     <Run Text="(Ctrl+S)"
-                                                         Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                         Foreground="{DynamicResource TextFillColor3}" />
                                                 </TextBlock>
                                             </ToolTip.Tip>
                                             <Viewbox Width="16" Height="16">
@@ -150,7 +149,7 @@
                                             <Button.Flyout>
                                                 <Flyout Placement="Bottom" ShowMode="Transient">
                                                     <StackPanel Margin="3" Spacing="2">
-                                                        <Button Theme="{StaticResource AppBarButtonTheme}"
+                                                        <Button Theme="{DynamicResource AppBarButtonTheme}"
                                                                 Command="{CompiledBinding SaveAsWorkbench}"
                                                                 Click="MenuButtonsOnClick">
                                                             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -161,7 +160,7 @@
                                                                 <TextBlock Text="{StaticResource SaveAs}" />
                                                             </StackPanel>
                                                         </Button>
-                                                        <Button Theme="{StaticResource AppBarButtonTheme}"
+                                                        <Button Theme="{DynamicResource AppBarButtonTheme}"
                                                                 Command="{CompiledBinding SaveAllWorkbenches}"
                                                                 Click="MenuButtonsOnClick">
                                                             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -178,8 +177,8 @@
 
                                             <Viewbox Width="12" Height="12">
                                                 <Path Data="{StaticResource ChevronDownRegular}"
-                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
-                                                      Stroke="{StaticResource TextFillColorPrimaryBrush}"
+                                                      Fill="{DynamicResource TextFillColor1}"
+                                                      Stroke="{DynamicResource TextFillColor1}"
                                                       StrokeThickness="2" />
                                             </Viewbox>
                                         </Button>
@@ -201,7 +200,7 @@
                                                 <Run Text="{StaticResource Instruments}" />
                                                 &#8203;
                                                 <Run Text="(Ctrl+T)"
-                                                     Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                     Foreground="{DynamicResource TextFillColor3}" />
                                             </TextBlock>
                                         </ToolTip.Tip>
                                         <Viewbox Width="16" Height="16">
@@ -227,19 +226,18 @@
                             </UniformGrid>
 
                             <Border Grid.Row="2"
-                                    Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                                    BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                                    Background="{DynamicResource BackgroundColor1}"
+                                    BorderBrush="{DynamicResource ControlBorderColor}"
                                     BorderThickness="0 1 0 0"
                                     Height="50"
                                     CornerRadius="0 0 8 8">
                                 <Panel Margin="8 5">
                                     <Button Padding="10 7"
                                             Classes="EnabledIconAnimation"
-                                            Theme="{StaticResource AppBarButtonTheme}"
+                                            Theme="{DynamicResource AppBarButtonTheme}"
                                             HorizontalAlignment="Left"
                                             ToolTip.Tip="{StaticResource Settings}"
-                                            Command="{CompiledBinding OpenSettings}"
-                                            CommandParameter="{x:Static e:TitleBarType.ExtendedWithoutContent}">
+                                            Command="{CompiledBinding OpenSettings}">
                                         <Viewbox Width="15" Height="15">
                                             <Path Data="{StaticResource SettingsRegular}"
                                                   Stretch="Uniform" />
@@ -251,7 +249,7 @@
                                                 HorizontalAlignment="Right">
                                         <Button Padding="10 7"
                                                 Classes="EnabledIconAnimation"
-                                                Theme="{StaticResource AppBarButtonTheme}"
+                                                Theme="{DynamicResource AppBarButtonTheme}"
                                                 ToolTip.Tip="{StaticResource Logs}"
                                                 Command="{CompiledBinding OpenLogWindow}">
                                             <Viewbox Width="15" Height="15">
@@ -261,7 +259,7 @@
 
                                         <Button Padding="10 7"
                                                 Classes="EnabledIconAnimation"
-                                                Theme="{StaticResource AppBarButtonTheme}"
+                                                Theme="{DynamicResource AppBarButtonTheme}"
                                                 ToolTip.Tip="{StaticResource ExitFromRegul}"
                                                 Command="{CompiledBinding Exit}">
                                             <Viewbox Width="15" Height="15">
@@ -282,31 +280,30 @@
         </Panel>
 
         <EditorsTabView x:Name="TabView"
-                                 Items="{CompiledBinding Workbenches}"
+                                 ItemsSource="{CompiledBinding Workbenches}"
                                  SelectedItem="{CompiledBinding SelectedWorkbench}"
                                  Margin="0 2 0 0">
             <EditorsTabView.Styles>
                 <Style Selector="PleasantTabItem">
                     <Setter Property="IsClosable" Value="True" />
-                    <Setter Property="CanBeDragged" Value="True" />
                     <Setter Property="ToolTip.Tip">
                         <Template>
                             <StackPanel x:DataType="s:Workbench">
                                 <TextBlock
                                     Text="{CompiledBinding PathToFile, Converter={x:Static c:PathToFileNameConverter.Instance}}"
-                                    Theme="{StaticResource BodyStrongTextBlockTheme}" />
+                                    Theme="{DynamicResource BodyStrongTextBlockTheme}" />
                                 <TextBlock Text="{CompiledBinding PathToFile}"
                                            IsVisible="{CompiledBinding PathToFile, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                            FontSize="12"
                                            TextTrimming="CharacterEllipsis"
                                            FontWeight="Normal"
-                                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                                           Foreground="{DynamicResource TextFillColor2}" />
                                 <TextBlock Text="{StaticResource ChangesHaveBeenMadeToThisProject}"
                                            IsVisible="{CompiledBinding IsDirty}"
                                            FontSize="12"
                                            TextTrimming="CharacterEllipsis"
                                            FontWeight="Normal"
-                                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                                           Foreground="{DynamicResource TextFillColor2}" />
                             </StackPanel>
                         </Template>
                     </Setter>
@@ -321,7 +318,7 @@
                                 <MenuItem.Icon>
                                     <Viewbox Width="16" Height="16">
                                         <Path Data="{StaticResource FolderRegular}"
-                                              Fill="{StaticResource TextFillColorPrimaryBrush}" />
+                                              Fill="{DynamicResource TextFillColor1}" />
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -329,7 +326,7 @@
                             <MenuItem Header="{StaticResource Close}"
                                       FontSize="14"
                                       FontWeight="Normal"
-                                      Command="{Binding $parent[views:MainWindow].ViewModel.CloseWorkbench}"
+                                      Command="{Binding $parent[views:MainWindow].ViewModel.CloseWorkbenchAsync}"
                                       CommandParameter="{CompiledBinding}" />
                         </MenuFlyout>
                     </Setter>
@@ -351,8 +348,8 @@
                                         <StackPanel>
                                             <TextBlock Text="{StaticResource NewProject}" FontWeight="Bold" />
                                             <TextBlock Text="{StaticResource CreatingNewProject}"
-                                                       Theme="{StaticResource CaptionTextBlockTheme}"
-                                                       Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                       Theme="{DynamicResource CaptionTextBlockTheme}"
+                                                       Foreground="{DynamicResource TextFillColor3}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Button>
@@ -368,8 +365,8 @@
                                         <StackPanel>
                                             <TextBlock Text="{StaticResource OpenFile}" FontWeight="Bold" />
                                             <TextBlock Text="{StaticResource OpeningExistingFile}"
-                                                       Theme="{StaticResource CaptionTextBlockTheme}"
-                                                       Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                       Theme="{DynamicResource CaptionTextBlockTheme}"
+                                                       Foreground="{DynamicResource TextFillColor3}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Button>
@@ -385,8 +382,8 @@
                                         <StackPanel>
                                             <TextBlock Text="{StaticResource OpenProject}" FontWeight="Bold" />
                                             <TextBlock Text="{StaticResource OpenProjectYouRecentlyStarted}"
-                                                       Theme="{StaticResource CaptionTextBlockTheme}"
-                                                       Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                                                       Theme="{DynamicResource CaptionTextBlockTheme}"
+                                                       Foreground="{DynamicResource TextFillColor3}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Button>
@@ -410,7 +407,7 @@
 
                         <Border Grid.Column="2"
                                 Margin="5 0 0 0"
-                                Background="{StaticResource TextFillColorSecondaryBrush}"
+                                Background="{DynamicResource TextFillColor2}"
                                 CornerRadius="10"
                                 Width="8"
                                 Height="8"

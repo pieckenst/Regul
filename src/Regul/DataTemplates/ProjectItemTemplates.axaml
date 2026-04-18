@@ -1,12 +1,12 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:c="clr-namespace:Regul.Converters"
                     xmlns:views="clr-namespace:Regul.Views"
                     xmlns:structures1="clr-namespace:Regul.Structures"
                     xmlns:w="using:Regul.Views.Windows">
     <DataTemplate x:Key="ProjectMainPageItemTemplate" DataType="structures1:Project">
-        <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{StaticResource ControlStrokeColorSecondaryBrush}"
+        <Border Background="{DynamicResource BackgroundColor2}"
+                BorderBrush="{DynamicResource ControlBorderColor}"
                 BorderThickness="1"
                 CornerRadius="4"
                 Padding="5">
@@ -20,7 +20,7 @@
                             HorizontalAlignment="Left"
                             Spacing="2">
                     <StackPanel Spacing="5" Orientation="Horizontal">
-                        <TextBlock Theme="{StaticResource BodyStrongTextBlockTheme}"
+                        <TextBlock Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                    Text="{CompiledBinding Path, Converter={x:Static c:PathToFileNameConverter.Instance}}" />
                         <TextBlock
                             Text="{CompiledBinding IdEditor, Converter={x:Static c:IdEditorToNameConverter.Instance}}"
@@ -28,19 +28,19 @@
                             Margin="0 0 0 2"
                             FontSize="12"
                             TextTrimming="CharacterEllipsis"
-                            Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                            Foreground="{DynamicResource TextFillColor2}" />
                     </StackPanel>
 
                     <TextBlock FontSize="12"
                                Text="{CompiledBinding Path}"
                                TextTrimming="CharacterEllipsis"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                               Foreground="{DynamicResource TextFillColor2}" />
 
                     <TextBlock Margin="0 -4 0 0"
                                FontSize="12"
                                TextTrimming="CharacterEllipsis"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}">
-                        <Run Text="{StaticResource LastChange}" /><Run Text=":" />
+                               Foreground="{DynamicResource TextFillColor2}">
+                        <Run Text="{DynamicResource LastChange}" /><Run Text=":" />
                         &#8203;<Run Text="{CompiledBinding DateTime}" />
                     </TextBlock>
                 </StackPanel>
@@ -50,9 +50,9 @@
                             Orientation="Horizontal"
                             Margin="0 0 5 0"
                             Spacing="5">
-                    <Button Theme="{StaticResource AppBarButtonTheme}"
+                    <Button Theme="{DynamicResource AppBarButtonTheme}"
                             Classes="EnabledIconAnimation"
-                            ToolTip.Tip="{StaticResource OpenProject}"
+                            ToolTip.Tip="{DynamicResource OpenProject}"
                             Padding="5"
                             Command="{CompiledBinding $parent[views:MainWindow].ViewModel.OpenProject}"
                             CommandParameter="{CompiledBinding}">
@@ -61,10 +61,10 @@
                               Width="16"
                               Height="16" />
                     </Button>
-                    <Button Theme="{StaticResource DangerButtonTheme}"
+                    <Button Theme="{DynamicResource DangerButtonTheme}"
                             BorderThickness="0"
                             Classes="EnabledIconAnimation"
-                            ToolTip.Tip="{StaticResource DeleteProject}"
+                            ToolTip.Tip="{DynamicResource DeleteProject}"
                             Padding="5"
                             Command="{CompiledBinding $parent[views:MainWindow].ViewModel.DeleteProject}"
                             CommandParameter="{CompiledBinding}">
@@ -79,8 +79,8 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ProjectWindowItemTemplate" DataType="structures1:Project">
-        <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{StaticResource ControlStrokeColorSecondaryBrush}"
+        <Border Background="{DynamicResource BackgroundColor2}"
+                BorderBrush="{DynamicResource ControlBorderColor}"
                 BorderThickness="1"
                 CornerRadius="4"
                 Padding="5">
@@ -94,7 +94,7 @@
                             HorizontalAlignment="Left"
                             Spacing="2">
                     <StackPanel Spacing="5" Orientation="Horizontal">
-                        <TextBlock Theme="{StaticResource BodyStrongTextBlockTheme}"
+                        <TextBlock Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                    Text="{CompiledBinding Path, Converter={x:Static c:PathToFileNameConverter.Instance}}" />
                         <TextBlock
                             Text="{CompiledBinding IdEditor, Converter={x:Static c:IdEditorToNameConverter.Instance}}"
@@ -102,19 +102,19 @@
                             Margin="0 0 0 2"
                             FontSize="12"
                             TextTrimming="CharacterEllipsis"
-                            Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                            Foreground="{DynamicResource TextFillColor2}" />
                     </StackPanel>
 
                     <TextBlock FontSize="12"
                                Text="{CompiledBinding Path}"
                                TextTrimming="CharacterEllipsis"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                               Foreground="{DynamicResource TextFillColor2}" />
 
                     <TextBlock Margin="0 -4 0 0"
                                FontSize="12"
                                TextTrimming="CharacterEllipsis"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}">
-                        <Run Text="{StaticResource LastChange}" /><Run Text=":" />
+                               Foreground="{DynamicResource TextFillColor2}">
+                        <Run Text="{DynamicResource LastChange}" /><Run Text=":" />
                         &#8203;<Run Text="{CompiledBinding DateTime}" />
                     </TextBlock>
                 </StackPanel>
@@ -124,9 +124,9 @@
                             Orientation="Horizontal"
                             Margin="0 0 5 0"
                             Spacing="5">
-                    <Button Theme="{StaticResource AppBarButtonTheme}"
+                    <Button Theme="{DynamicResource AppBarButtonTheme}"
                             Classes="EnabledIconAnimation"
-                            ToolTip.Tip="{StaticResource OpenProject}"
+                            ToolTip.Tip="{DynamicResource OpenProject}"
                             Padding="5"
                             Command="{CompiledBinding $parent[w:OpenProjectWindow].ViewModel.OpenProject}"
                             CommandParameter="{CompiledBinding}">
@@ -135,10 +135,10 @@
                               Width="16"
                               Height="16" />
                     </Button>
-                    <Button Theme="{StaticResource DangerButtonTheme}"
+                    <Button Theme="{DynamicResource DangerButtonTheme}"
                             BorderThickness="0"
                             Classes="EnabledIconAnimation"
-                            ToolTip.Tip="{StaticResource DeleteProject}"
+                            ToolTip.Tip="{DynamicResource DeleteProject}"
                             Padding="5"
                             Command="{CompiledBinding $parent[w:OpenProjectWindow].ViewModel.DeleteProject}"
                             CommandParameter="{CompiledBinding}">

@@ -1,16 +1,16 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using PleasantUI.Controls;
-using PleasantUI.Enums;
+using PleasantUI.Controls.Chrome;
 using Regul.Managers;
 using Regul.ModuleSystem;
 using Regul.ViewModels.Pages;
-using PleasantUI.Reactive;
+using TitleBarType = PleasantUI.Controls.Chrome.PleasantTitleBar.Type;
 
 namespace Regul.Views.Pages;
 
-public class SettingsPage : UserControl
+public partial class SettingsPage : UserControl
 {
     public SettingsPageViewModel ViewModel { get; } = null!;
 
@@ -31,6 +31,6 @@ public class SettingsPage : UserControl
     private void ChangeDisplayMode(SplitViewDisplayMode obj)
     {
         if (WindowsManager.MainWindow is not null)
-            WindowsManager.MainWindow.TitleBarType = obj == SplitViewDisplayMode.Overlay ? TitleBarType.NavigationViewExtended : TitleBarType.NavigationView;
+            WindowsManager.MainWindow.TitleBarType = obj == SplitViewDisplayMode.Overlay ? TitleBarType.ClassicExtended : TitleBarType.Classic;
     }
 }

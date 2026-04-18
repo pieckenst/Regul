@@ -1,17 +1,17 @@
-﻿using System.Collections.Specialized;
+using System.Reactive.Linq;
+using System.Collections.Specialized;
 using System.Globalization;
-using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Platform.Storage;
-using PleasantUI;
 using PleasantUI.Controls;
-using PleasantUI.Enums;
-using PleasantUI.Extensions;
-using PleasantUI.Reactive;
-using PleasantUI.Windows;
+using PleasantUI.Controls.Chrome;
+using PleasantUI.Core.Interfaces;
+using PleasantUI.Core.Structures;
+using PleasantUI.ToolKit;
+using ReactiveUI;
 using Regul.Enums;
 using Regul.Helpers;
 using Regul.Interfaces;
@@ -31,7 +31,7 @@ using Path = System.IO.Path;
 
 namespace Regul.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : ReactiveObject
 {
     public SynchronizationContext? SynchronizationContext;
 
@@ -58,49 +58,49 @@ public class MainWindowViewModel : ViewModelBase
     public object? Content
     {
         get => _content;
-        set => RaiseAndSetIfChanged(ref _content, value);
+        set => this.RaiseAndSetIfChanged(ref _content, value);
     }
 
     public Workbench? SelectedWorkbench
     {
         get => _selectedWorkbench;
-        set => RaiseAndSetIfChanged(ref _selectedWorkbench, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedWorkbench, value);
     }
 
     public string SearchName
     {
         get => _searchName;
-        set => RaiseAndSetIfChanged(ref _searchName, value);
+        set => this.RaiseAndSetIfChanged(ref _searchName, value);
     }
 
     public string SearchPath
     {
         get => _searchPath;
-        set => RaiseAndSetIfChanged(ref _searchPath, value);
+        set => this.RaiseAndSetIfChanged(ref _searchPath, value);
     }
 
     public string SearchEditor
     {
         get => _searchEditor;
-        set => RaiseAndSetIfChanged(ref _searchEditor, value);
+        set => this.RaiseAndSetIfChanged(ref _searchEditor, value);
     }
 
     public bool ReverseProjectList
     {
         get => _reverseProjectList;
-        set => RaiseAndSetIfChanged(ref _reverseProjectList, value);
+        set => this.RaiseAndSetIfChanged(ref _reverseProjectList, value);
     }
 
     public bool SortByAlphabetical
     {
         get => _sortByAlphabetical;
-        set => RaiseAndSetIfChanged(ref _sortByAlphabetical, value);
+        set => this.RaiseAndSetIfChanged(ref _sortByAlphabetical, value);
     }
 
     public bool SortByDateOfChange
     {
         get => _sortByDateOfChange;
-        set => RaiseAndSetIfChanged(ref _sortByDateOfChange, value);
+        set => this.RaiseAndSetIfChanged(ref _sortByDateOfChange, value);
     }
 
     public bool IsHomePage => Content is HomePage;
@@ -292,14 +292,14 @@ public class MainWindowViewModel : ViewModelBase
         SortedProjects.AddRange(list);
     }
 
-    private void DoRaiseContentProperty(object? obj) => RaisePropertyChanged(nameof(IsHomePage));
+    private void DoRaiseContentProperty(object? obj) => this.RaisePropertyChanged(nameof(IsHomePage));
 
-    public void OpenSettings(TitleBarType titleBarType = TitleBarType.Classic)
+    public void OpenSettings(PleasantTitleBar.Type titleBarType = PleasantTitleBar.Type.Classic)
     {
         SettingsPageViewModel viewModel = new(Content, titleBarType);
         SettingsPage settingsPage = new(viewModel);
 
-        WindowsManager.MainWindow!.ChangePage(settingsPage, TitleBarType.NavigationView);
+        WindowsManager.MainWindow!.ChangePage(settingsPage, PleasantTitleBar.Type.Classic);
     }
 
     public async Task OpenToolsAsync()
@@ -316,7 +316,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             DataContext = new ToolWindowViewModel()
         };
-        await toolWindow.Show(WindowsManager.MainWindow!);
+        await toolWindow.ShowAsync((IPleasantWindow)WindowsManager.MainWindow!);
     }
 
     public void GoToHome()
@@ -326,7 +326,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public void GoToEditors()
     {
-        WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), TitleBarType.ExtendedWithoutContent);
+        WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), PleasantTitleBar.Type.ClassicExtended);
     }
 
     public async Task CreateProjectAsync()
@@ -350,7 +350,7 @@ public class MainWindowViewModel : ViewModelBase
             SelectedWorkbench = workbench;
 
             if (Content is not EditorsPage)
-                WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), TitleBarType.ExtendedWithoutContent);
+                WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), PleasantTitleBar.Type.ClassicExtended);
         }
     }
 
@@ -363,7 +363,7 @@ public class MainWindowViewModel : ViewModelBase
             SelectedWorkbench = existWorkbench;
 
             if (Content is not EditorsPage)
-                WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), TitleBarType.ExtendedWithoutContent);
+                WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), PleasantTitleBar.Type.ClassicExtended);
 
             WindowsManager.MainWindow?.ShowNotification("ProjectAlreadyOpen", NotificationType.Warning, TimeSpan.FromSeconds(5));
             return;
@@ -391,7 +391,7 @@ public class MainWindowViewModel : ViewModelBase
         SelectedWorkbench = workbench;
 
         if (Content is not EditorsPage)
-            WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), TitleBarType.ExtendedWithoutContent);
+            WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), PleasantTitleBar.Type.ClassicExtended);
     }
     
     public async Task OpenFileAsync()
@@ -450,7 +450,7 @@ public class MainWindowViewModel : ViewModelBase
         SelectedWorkbench = Workbenches.ElementAt(Workbenches.Count - 1);
 
         if (Content is not EditorsPage)
-            WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), TitleBarType.ExtendedWithoutContent);
+            WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), PleasantTitleBar.Type.ClassicExtended);
     }
 
     private void SaveExtension(bool openExtension, string path, string idEditor)
@@ -466,7 +466,7 @@ public class MainWindowViewModel : ViewModelBase
     public async Task OpenProjectsWindowAsync()
     {
         OpenProjectWindow openProjectWindow = new();
-        await openProjectWindow.Show(WindowsManager.MainWindow!);
+        await openProjectWindow.ShowAsync((IPleasantWindow)WindowsManager.MainWindow!);
     }
 
     public void OpenLogWindow()

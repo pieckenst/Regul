@@ -1,4 +1,4 @@
-﻿<ContentDialog xmlns="https://github.com/avaloniaui"
+<ContentDialog xmlns="https://github.com/avaloniaui"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,7 +14,7 @@
 
     <Grid RowDefinitions="Auto,*">
         <TextBlock Grid.Row="0"
-                   Theme="{StaticResource SubtitleTextBlockTheme}"
+                   Theme="{DynamicResource SubtitleTextBlockTheme}"
                    Text="{StaticResource OpenProject}"
                    Margin="20 15 0 0"
                    HorizontalAlignment="Left" />
@@ -26,14 +26,14 @@
                     Margin="0 15 20 0">
             <Button Padding="6"
                     Classes="EnabledIconAnimation"
-                    Theme="{StaticResource AppBarButtonTheme}"
+                    Theme="{DynamicResource AppBarButtonTheme}"
                     ToolTip.Tip="{StaticResource Search}">
                 <Button.Flyout>
                     <Flyout Placement="Bottom" ShowMode="Transient">
                         <Grid RowDefinitions="*,Auto">
                             <StackPanel Spacing="5" Margin="10">
                                 <Panel>
-                                    <TextBlock Theme="{StaticResource BodyStrongTextBlockTheme}"
+                                    <TextBlock Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                                Text="{StaticResource Search}"
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Center" />
@@ -42,15 +42,15 @@
                                                 Spacing="5"
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Center">
-                                        <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                                                BorderBrush="{StaticResource ControlStrokeColorSecondaryBrush}"
+                                        <Border Background="{DynamicResource BackgroundColor2}"
+                                                BorderBrush="{DynamicResource ControlBorderColor}"
                                                 BorderThickness="1"
                                                 CornerRadius="4"
                                                 ToolTip.Tip="{StaticResource NumberOfElementsFound}">
                                             <StackPanel Orientation="Horizontal" Spacing="8"
                                                         Margin="8 5">
                                                 <Path Data="{StaticResource SearchRegular}"
-                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                      Fill="{DynamicResource TextFillColor1}"
                                                       VerticalAlignment="Center"
                                                       Width="14"
                                                       Height="14"
@@ -98,8 +98,8 @@
                             </StackPanel>
 
                             <Border Grid.Row="1"
-                                    Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                                    BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                                    Background="{DynamicResource BackgroundColor1}"
+                                    BorderBrush="{DynamicResource ControlBorderColor}"
                                     BorderThickness="0 1 0 0"
                                     Height="40"
                                     CornerRadius="0 0 8 8">
@@ -108,7 +108,7 @@
                                         <RadioButton Classes="EnabledIconAnimation"
                                                      IsThreeState="False"
                                                      GroupName="SortingProjects"
-                                                     Theme="{StaticResource RadioButtonLikeButton}"
+                                                     Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                      CornerRadius="4 0 0 4"
                                                      Padding="7"
                                                      IsChecked="{CompiledBinding SortByAlphabetical}">
@@ -117,7 +117,7 @@
                                                     <TextBlock
                                                         Text="{StaticResource SortByAlphabetical}"
                                                         Opacity="1"
-                                                        Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                        Foreground="{DynamicResource TextFillColor1}"
                                                         FontWeight="Normal" />
                                                 </ToolTip>
                                             </ToolTip.Tip>
@@ -129,7 +129,7 @@
                                         <RadioButton Classes="EnabledIconAnimation"
                                                      IsThreeState="False"
                                                      GroupName="SortingProjects"
-                                                     Theme="{StaticResource RadioButtonLikeButton}"
+                                                     Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                      CornerRadius="0 4 4 0"
                                                      IsChecked="{CompiledBinding SortByDateOfChange}"
                                                      Padding="7">
@@ -138,7 +138,7 @@
                                                     <TextBlock
                                                         Text="{StaticResource SortByDateOfChange}"
                                                         Opacity="1"
-                                                        Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                        Foreground="{DynamicResource TextFillColor1}"
                                                         FontWeight="Normal" />
                                                 </ToolTip>
                                             </ToolTip.Tip>
@@ -153,13 +153,13 @@
                                                   HorizontalAlignment="Right"
                                                   Margin="0 3"
                                                   IsChecked="{CompiledBinding ReverseProjectList}"
-                                                  Theme="{StaticResource AppBarToggleButtonTheme}"
+                                                  Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                   Padding="7">
                                         <ToolTip.Tip>
                                             <ToolTip>
                                                 <TextBlock Text="{StaticResource InvertList}"
                                                            Opacity="1"
-                                                           Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                           Foreground="{DynamicResource TextFillColor1}"
                                                            FontWeight="Normal" />
                                             </ToolTip>
                                         </ToolTip.Tip>
@@ -181,14 +181,14 @@
                 </Viewbox>
             </Button>
 
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource ControlStrokeColorSecondaryBrush}"
+            <Border Background="{DynamicResource BackgroundColor2}"
+                    BorderBrush="{DynamicResource ControlBorderColor}"
                     BorderThickness="1"
                     CornerRadius="4"
                     ToolTip.Tip="{StaticResource NumberOfAllProjectsInTheProgram}">
                 <StackPanel Orientation="Horizontal" Spacing="8" Margin="8 5">
                     <Path Data="{StaticResource NavigationRegular}"
-                          Fill="{StaticResource TextFillColorPrimaryBrush}"
+                          Fill="{DynamicResource TextFillColor1}"
                           Width="14"
                           VerticalAlignment="Center"
                           Stretch="Uniform" />
@@ -200,7 +200,7 @@
         </StackPanel>
 
         <SmoothScrollViewer Grid.Row="1" Margin="0 10 0 0">
-            <ItemsControl Items="{CompiledBinding SortedProjects}"
+            <ItemsControl ItemsSource="{CompiledBinding SortedProjects}"
                           Margin="20 0 20 10"
                           ItemTemplate="{StaticResource ProjectWindowItemTemplate}">
                 <ItemsControl.ItemsPanel>
@@ -216,7 +216,7 @@
                    Text="{StaticResource NoProjects}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
-                   Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                   Foreground="{DynamicResource TextFillColor3}"
                    IsVisible="{CompiledBinding !SortedProjects.Count}" />
     </Grid>
 

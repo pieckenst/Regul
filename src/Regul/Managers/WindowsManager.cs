@@ -1,6 +1,7 @@
-﻿using Avalonia.Collections;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using PleasantUI.Controls;
+using PleasantUI.Core.Interfaces;
 using Regul.Views;
 
 namespace Regul.Managers;
@@ -23,7 +24,7 @@ public static class WindowsManager
     {
         T? foundWindow = FindModalWindow<T>();
 
-        if (foundWindow is { CanOpen: true }) return null;
+        if (foundWindow is not null && !foundWindow.IsClosed) return null;
 
         T window = (T)Activator.CreateInstance(typeof(T), args)!;
         window.Closed += (sender, _) =>
@@ -34,7 +35,7 @@ public static class WindowsManager
         ModalWindows.Add(window);
 
         if (host != null)
-            window.Show(host);
+            window.ShowAsync((IPleasantWindow)host);
 
         return window;
     }
@@ -90,7 +91,7 @@ public static class WindowsManager
         {
             ContentDialog window = ModalWindows[index];
             if (types.Any(type => type.IsInstanceOfType(window)))
-                window.Close();
+                window.CloseAsync();
         }
     }
 }

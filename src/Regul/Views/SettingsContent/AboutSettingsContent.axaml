@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,20 +15,20 @@
         <StackPanel Spacing="5" Margin="25">
             <TextBlock Text="{StaticResource About}"
                        Margin="0 0 0 10"
-                       Theme="{StaticResource TitleTextBlockTheme}" />
+                       Theme="{DynamicResource TitleTextBlockTheme}" />
             <Panel Margin="0 5 0 18">
                 <Grid HorizontalAlignment="Left" ColumnDefinitions="Auto,Auto">
                     <Image Grid.Column="0" Source="{StaticResource RegulIcon}" Width="70" />
                     <StackPanel Grid.Column="1" Width="150" Margin="20 0 0 0" VerticalAlignment="Center">
                         <Path Stretch="Uniform"
                               Data="{StaticResource RegulText}"
-                              Fill="{StaticResource TextFillColorPrimaryBrush}" />
+                              Fill="{DynamicResource TextFillColor1}" />
 
-                        <TextBlock Foreground="{StaticResource TextFillColorTertiaryBrush}" FontSize="12">
+                        <TextBlock Foreground="{DynamicResource TextFillColor3}" FontSize="12">
                             <Run Text="{StaticResource License}" /><Run Text=":" />
                             &#8203;<Run Text="MIT" />
                         </TextBlock>
-                        <TextBlock Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                        <TextBlock Foreground="{DynamicResource TextFillColor3}"
                                    FontSize="12"
                                    Margin="0 -2 0 0">
                             <Run Text="{StaticResource Version}" /><Run Text=":" />
@@ -40,17 +40,17 @@
                 <StackPanel HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Width="200">
-                    <Path Fill="{StaticResource TextFillColorPrimaryBrush}"
+                    <Path Fill="{DynamicResource TextFillColor1}"
                           Data="{StaticResource OnebeldIcon}"
                           Stretch="Uniform" />
                     <TextBlock Text="Dmitry Zhutkov"
                                FontSize="12"
                                TextAlignment="Right"
-                               Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                               Foreground="{DynamicResource TextFillColor3}" />
                     <Button x:Name="ContactTheAuthorButton"
-                            Theme="{StaticResource AppBarButtonTheme}"
+                            Theme="{DynamicResource AppBarButtonTheme}"
                             Content="{StaticResource ContactTheAuthor}"
-                            Foreground="{StaticResource AccentFillColorLightTertiaryBrush}"
+                            Foreground="{DynamicResource AccentLightColor2}"
                             Padding="0"
                             FontSize="12"
                             HorizontalAlignment="Right">
@@ -119,7 +119,7 @@
                         <ProgressRing IsVisible="{CompiledBinding IsCheckUpdateProgram}"
                                       IsIndeterminate="{CompiledBinding IsCheckUpdateProgram}" />
 
-                        <Button Theme="{StaticResource AccentButtonTheme}"
+                        <Button Theme="{DynamicResource AccentButtonTheme}"
                                 IsEnabled="{CompiledBinding !IsCheckUpdateProgram}"
                                 Padding="20 5"
                                 Content="{StaticResource Check}"
@@ -142,12 +142,12 @@
 
                             <TextBlock VerticalAlignment="Center"
                                        HorizontalAlignment="Right"
-                                       Foreground="{StaticResource TextFillColorTertiaryBrush}">
+                                       Foreground="{DynamicResource TextFillColor3}">
                                 <Run Text="{StaticResource Version}" /><Run Text=":" />
                                 &#8203;<Run Text="11.0.999-cibuild0028700-beta" />
                             </TextBlock>
                         </Panel>
-                        <Separator Background="{StaticResource CardStrokeColorDefaultBrush}" Margin="-12 0" />
+                        <Separator Background="{DynamicResource ControlBorderColor}" Margin="-12 0" />
                         <Panel Margin="5">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Image Source="{StaticResource PleasantUiImage}" Width="30" Height="30" />
@@ -157,23 +157,23 @@
                             <StackPanel>
                                 <TextBlock VerticalAlignment="Center"
                                            HorizontalAlignment="Right"
-                                           Foreground="{StaticResource TextFillColorTertiaryBrush}">
+                                           Foreground="{DynamicResource TextFillColor3}">
                                     <Run Text="{StaticResource Version}" /><Run Text=":" />
                                     &#8203;<Run Text="2.1.0" />
                                 </TextBlock>
                                 <TextBlock VerticalAlignment="Center"
                                            HorizontalAlignment="Right"
-                                           Foreground="{StaticResource TextFillColorTertiaryBrush}">
+                                           Foreground="{DynamicResource TextFillColor3}">
                                     <Run Text="{StaticResource Author}" /><Run Text=":" />
                                     &#8203;<Run Text="Onebeld" />
                                 </TextBlock>
                             </StackPanel>
                         </Panel>
-                        <Separator Background="{StaticResource CardStrokeColorDefaultBrush}" Margin="-12 0" />
+                        <Separator Background="{DynamicResource ControlBorderColor}" Margin="-12 0" />
                         <Panel Margin="5">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Path Data="{StaticResource VirusTotalIcon}"
-                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                      Fill="{DynamicResource TextFillColor1}"
                                       Stretch="Uniform"
                                       Width="30"
                                       Height="30" />
@@ -184,13 +184,13 @@
                             <StackPanel>
                                 <TextBlock VerticalAlignment="Center"
                                            HorizontalAlignment="Right"
-                                           Foreground="{StaticResource TextFillColorTertiaryBrush}">
+                                           Foreground="{DynamicResource TextFillColor3}">
                                     <Run Text="{StaticResource Version}" /><Run Text=":" />
                                     &#8203;<Run Text="2.1.0" />
                                 </TextBlock>
                                 <TextBlock VerticalAlignment="Center"
                                            HorizontalAlignment="Right"
-                                           Foreground="{StaticResource TextFillColorTertiaryBrush}">
+                                           Foreground="{DynamicResource TextFillColor3}">
                                     <Run Text="{StaticResource Author}" /><Run Text=":" />
                                     &#8203;<Run Text="Genbox" />
                                 </TextBlock>
@@ -206,15 +206,15 @@
                                 IsExpanded="True">
                 <OptionsDisplayItem.Content>
                     <StackPanel Spacing="10" Margin="45 0 0 0">
-                        <Button Theme="{StaticResource AppBarButtonTheme}"
+                        <Button Theme="{DynamicResource AppBarButtonTheme}"
                                 Content="Patreon"
-                                Foreground="{StaticResource AccentFillColorLightTertiaryBrush}"
+                                Foreground="{DynamicResource AccentLightColor2}"
                                 Command="{CompiledBinding OpenPatreon}"
                                 HorizontalAlignment="Left"
                                 Padding="0 0" />
-                        <Button Theme="{StaticResource AppBarButtonTheme}"
+                        <Button Theme="{DynamicResource AppBarButtonTheme}"
                                 Content="GitHub"
-                                Foreground="{StaticResource AccentFillColorLightTertiaryBrush}"
+                                Foreground="{DynamicResource AccentLightColor2}"
                                 Command="{CompiledBinding OpenGitHub}"
                                 HorizontalAlignment="Left"
                                 Padding="0 0" />
@@ -222,13 +222,13 @@
                 </OptionsDisplayItem.Content>
             </OptionsDisplayItem>
 
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource ControlStrokeColorSecondaryBrush}"
+            <Border Background="{DynamicResource BackgroundColor2}"
+                    BorderBrush="{DynamicResource ControlBorderColor}"
                     BorderThickness="1"
                     CornerRadius="4"
                     Padding="12">
                 <StackPanel>
-                    <TextBlock Text="{StaticResource Description}" Theme="{StaticResource BodyStrongTextBlockTheme}"
+                    <TextBlock Text="{StaticResource Description}" Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                Margin="0 0 0 10" />
                     <TextBlock Text="{StaticResource RegulDescription}" TextWrapping="Wrap" />
 
@@ -237,13 +237,13 @@
                         &#8203;<Run Text="{CompiledBinding DotNetInformation}" />
                     </TextBlock>
 
-                    <TextBlock Text="{StaticResource License}" Theme="{StaticResource BodyStrongTextBlockTheme}"
+                    <TextBlock Text="{StaticResource License}" Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                Margin="0 10" />
                     <TextBlock Text="{StaticResource LicenseDescription}" TextWrapping="Wrap" />
 
                     <TextBlock TextWrapping="Wrap" Margin="0 10 0 0">
                         <Run Text="{StaticResource Copyright}" />
-                        &#8203;<Run Text="©2020-2023 Dmitry Zhutkov (Onebeld)" />
+                        &#8203;<Run Text="�2020-2023 Dmitry Zhutkov (Onebeld)" />
                     </TextBlock>
                 </StackPanel>
             </Border>

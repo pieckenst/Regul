@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Regul.Managers;
@@ -7,7 +7,7 @@ using Regul.Views.Pages;
 
 namespace Regul.Views.SettingsContent;
 
-public class StyleSettingsContent : UserControl
+public partial class StyleSettingsContent : UserControl
 {
     private readonly SettingsPage? _settingsPage;
     

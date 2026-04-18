@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -12,12 +12,12 @@
         <StackPanel Spacing="5" Margin="25">
             <TextBlock Text="{StaticResource General}"
                        Margin="0 0 0 10"
-                       Theme="{StaticResource TitleTextBlockTheme}" />
+                       Theme="{DynamicResource TitleTextBlockTheme}" />
 
             <OptionsDisplayItem Header="{StaticResource Language}"
                                 Icon="{StaticResource LocalLanguageRegular}">
                 <OptionsDisplayItem.ActionButton>
-                    <ComboBox Items="{CompiledBinding Source={x:Static s:App.Languages}}"
+                    <ComboBox ItemsSource="{CompiledBinding Source={x:Static s:App.Languages}}"
                               SelectedItem="{CompiledBinding SelectedLanguage}"
                               MinWidth="150">
                         <ComboBox.DataTemplates>
@@ -90,7 +90,7 @@
             <OptionsDisplayItem Header="{StaticResource ResetToDefaultSettings}"
                                 Icon="{StaticResource ArrowRepeatRegular}">
                 <OptionsDisplayItem.ActionButton>
-                    <Button Theme="{StaticResource DangerButtonTheme}"
+                    <Button Theme="{DynamicResource DangerButtonTheme}"
                             Content="{StaticResource Reset}"
                             Padding="20 5"
                             Command="{CompiledBinding ResetSettings}" />
@@ -107,13 +107,13 @@
                             Spacing="5">
                     <Button Padding="6"
                             Classes="EnabledIconAnimation"
-                            Theme="{StaticResource AppBarButtonTheme}"
+                            Theme="{DynamicResource AppBarButtonTheme}"
                             ToolTip.Tip="{StaticResource Search}">
                         <Button.Flyout>
                             <Flyout Placement="Bottom" ShowMode="Transient">
                                 <Grid RowDefinitions="Auto,*,Auto" Width="200">
                                     <TextBlock Grid.Row="0"
-                                               Theme="{StaticResource BodyStrongTextBlockTheme}"
+                                               Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                                Text="{StaticResource Search}"
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Center" Margin="10" />
@@ -154,14 +154,14 @@
                                     </Grid>
 
                                     <Border Grid.Row="2"
-                                            Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                                            BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                                            Background="{DynamicResource BackgroundColor1}"
+                                            BorderBrush="{DynamicResource ControlBorderColor}"
                                             BorderThickness="0 1 0 0"
                                             Height="40"
                                             CornerRadius="0 0 8 8">
                                         <ToggleButton HorizontalAlignment="Right"
                                                       Classes="EnabledIconAnimation"
-                                                      Theme="{StaticResource AppBarToggleButtonTheme}"
+                                                      Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                       IsChecked="{CompiledBinding InvertEditorRelatedExtensionList}"
                                                       Margin="5 3"
                                                       Padding="7">
@@ -169,7 +169,7 @@
                                                 <ToolTip>
                                                     <TextBlock Text="{StaticResource InvertList}"
                                                                Opacity="1"
-                                                               Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                               Foreground="{DynamicResource TextFillColor1}"
                                                                FontWeight="Normal" />
                                                 </ToolTip>
                                             </ToolTip.Tip>
@@ -194,7 +194,7 @@
             </Panel>
             
             <ItemsControl ItemTemplate="{StaticResource EditorRelatedExtensionItemTemplate}"
-                          Items="{CompiledBinding SortedEditorRelatedExtensions}">
+                          ItemsSource="{CompiledBinding SortedEditorRelatedExtensions}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Spacing="5" />
@@ -206,7 +206,7 @@
                        Text="{StaticResource Empty}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                       Foreground="{DynamicResource TextFillColor3}"
                        IsVisible="{CompiledBinding !SortedEditorRelatedExtensions.Count}" />
         </StackPanel>
     </SmoothScrollViewer>

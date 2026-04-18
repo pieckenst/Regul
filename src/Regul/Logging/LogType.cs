@@ -1,4 +1,4 @@
-﻿namespace Regul.Logging;
+namespace Regul.Logging;
 
 public enum LogType
 {

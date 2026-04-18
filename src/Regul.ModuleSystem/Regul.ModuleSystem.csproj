@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>preview</LangVersion>
@@ -13,13 +13,14 @@
     </PropertyGroup>
 
     <Import Project="..\..\build\Versions.props" />
-    
-    <ItemGroup>
-        <ProjectReference Include="..\PleasantUI\PleasantUI.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="ReactiveUI.Avalonia" Version="11.4.12" />
         <PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0-beta.130" />
+        <PackageReference Include="PleasantUI" Version="5.2.2" />
+        <PackageReference Include="PleasantUI.DataGrid" Version="5.2.2" />
+        <PackageReference Include="PleasantUI.MaterialIcons" Version="5.2.2" />
+        <PackageReference Include="PleasantUI.ToolKit" Version="5.2.2" />
     </ItemGroup>
 </Project>

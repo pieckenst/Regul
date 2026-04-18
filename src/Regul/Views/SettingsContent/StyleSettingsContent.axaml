@@ -1,15 +1,14 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Regul.ViewModels.Pages"
              xmlns:s="using:Regul"
-             xmlns:interactivity="clr-namespace:PleasantUI.Xaml.Interactivity;assembly=PleasantUI"
+             xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:behaviors="clr-namespace:Regul.Behaviors"
-             xmlns:other="clr-namespace:PleasantUI.Other;assembly=PleasantUI"
-             xmlns:media="clr-namespace:PleasantUI.Media;assembly=PleasantUI"
+             xmlns:models="clr-namespace:PleasantUI.Core.Models;assembly=PleasantUI"
+             xmlns:core="using:PleasantUI.Core"
              xmlns:pages="clr-namespace:Regul.Views.Pages"
-             xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
              x:Class="Regul.Views.SettingsContent.StyleSettingsContent"
              x:DataType="vm:SettingsPageViewModel">
@@ -17,22 +16,22 @@
         <StackPanel Spacing="5" Margin="25">
             <TextBlock Text="{StaticResource Style}"
                        Margin="0 0 0 10"
-                       Theme="{StaticResource TitleTextBlockTheme}" />
+                       Theme="{DynamicResource TitleTextBlockTheme}" />
 
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+            <Border Background="{DynamicResource BackgroundColor2}"
                     BorderThickness="1"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlBorderColor}"
                     Padding="16"
                     CornerRadius="4"
                     IsVisible="{CompiledBinding !IsSupportedOperatingSystem}">
                 <Grid ColumnDefinitions="Auto,*">
                     <Path Grid.Column="0" Data="{StaticResource InfoRegular}"
-                          Fill="{StaticResource SystemFillColorCautionBrush}"
+                          Fill="{DynamicResource SystemFillColorCaution}"
                           Stretch="Uniform"
                           Width="16"
                           Height="16"
                           Margin="0 0 10 0" />
-                    <TextBlock Grid.Column="1" Foreground="{StaticResource SystemFillColorCautionBrush}"
+                    <TextBlock Grid.Column="1" Foreground="{DynamicResource SystemFillColorCaution}"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
                                Text="{StaticResource SettingsNotBeSupported}" />
@@ -43,19 +42,8 @@
                                 Icon="{StaticResource TextFontRegular}">
                 <OptionsDisplayItem.ActionButton>
                     <ComboBox MinWidth="150"
-                              DataTemplates="{StaticResource FontItemTemplate}"
                               SelectedItem="{CompiledBinding SelectedFont}"
-                              Items="{CompiledBinding Fonts}" />
-                </OptionsDisplayItem.ActionButton>
-            </OptionsDisplayItem>
-
-            <OptionsDisplayItem Header="{StaticResource EnableShadow}"
-                                Icon="{StaticResource SparkleRegular}"
-                                Description="{StaticResource EnableShadowDescription}">
-                <OptionsDisplayItem.ActionButton>
-                    <ToggleSwitch Classes="RightToggle"
-                                  MinWidth="0"
-                                  IsChecked="{CompiledBinding EnableShadowing, Source={x:Static PleasantUiSettings.Instance}}" />
+                              ItemsSource="{CompiledBinding Fonts}" />
                 </OptionsDisplayItem.ActionButton>
             </OptionsDisplayItem>
 
@@ -65,7 +53,7 @@
                 <OptionsDisplayItem.ActionButton>
                     <ToggleSwitch Classes="RightToggle"
                                   MinWidth="0"
-                                  IsChecked="{CompiledBinding EnableCustomTitleBar, Source={x:Static PleasantUiSettings.Instance}}" />
+                                  IsChecked="{CompiledBinding WindowSettings.EnableCustomTitleBar, Source={x:Static core:PleasantSettings.Current}}" />
                 </OptionsDisplayItem.ActionButton>
             </OptionsDisplayItem>
 
@@ -74,21 +62,21 @@
                                 Expands="True">
                 <OptionsDisplayItem.IsEnabled>
                     <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <CompiledBinding Path="IsSupportedOperatingSystem" />
-                        <CompiledBinding Path="HardwareAcceleration" Source="{x:Static s:ApplicationSettings.Current}" />
+                        <Binding Path="IsSupportedOperatingSystem" />
+                        <Binding Path="HardwareAcceleration" Source="{x:Static s:ApplicationSettings.Current}" />
                     </MultiBinding>
                 </OptionsDisplayItem.IsEnabled>
                 <OptionsDisplayItem.ActionButton>
                     <ToggleSwitch Classes="RightToggle"
                                   MinWidth="0"
-                                  IsChecked="{CompiledBinding EnableTransparency, Source={x:Static PleasantUiSettings.Instance}}" />
+                                  IsChecked="{CompiledBinding WindowSettings.EnableBlur, Source={x:Static core:PleasantSettings.Current}}" />
                 </OptionsDisplayItem.ActionButton>
                 <OptionsDisplayItem.Content>
                     <StackPanel Margin="-12">
                         <DockPanel Margin="48 10 33 0">
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                 <NumericUpDown
-                                    Value="{CompiledBinding OpacityLevel, Source={x:Static PleasantUiSettings.Instance}}"
+                                    Value="{CompiledBinding WindowSettings.OpacityLevel, Source={x:Static core:PleasantSettings.Current}}"
                                     Maximum="1"
                                     Minimum="0"
                                     Increment="0.1"
@@ -101,14 +89,14 @@
                                         Maximum="1"
                                         Minimum="0"
                                         TickFrequency="0.01"
-                                        Value="{CompiledBinding OpacityLevel, Source={x:Static PleasantUiSettings.Instance}}" />
+                                        Value="{CompiledBinding WindowSettings.OpacityLevel, Source={x:Static core:PleasantSettings.Current}}" />
                             </StackPanel>
 
                             <TextBlock VerticalAlignment="Center" Text="{StaticResource OpacityLevel}"
                                        TextWrapping="Wrap" />
                         </DockPanel>
 
-                        <Separator Background="{StaticResource CardStrokeColorDefaultBrush}"
+                        <Separator Background="{DynamicResource ControlBorderColor}"
                                    Margin="-5 10" />
 
                         <DockPanel Margin="48 0 33 10">
@@ -124,28 +112,16 @@
                 </OptionsDisplayItem.Content>
             </OptionsDisplayItem>
 
-            <OptionsDisplayItem Header="{StaticResource AccentColor}"
+            <OptionsDisplayItem Header="{DynamicResource AccentColorLabel}"
                                 Icon="{StaticResource ColorRegular}">
                 <OptionsDisplayItem.ActionButton>
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <CheckBox Content="{StaticResource UseAccentFromSystem}"
                                   VerticalAlignment="Center"
                                   Margin="0 0 5 0"
-                                  IsChecked="{CompiledBinding UseAccentColorFromSystem, Source={x:Static PleasantUiSettings.Instance}}"
+                                  IsChecked="{CompiledBinding !PreferUserAccentColor, Source={x:Static core:PleasantSettings.Current}}"
                                   IsEnabled="{CompiledBinding IsSupportedOperatingSystem}"
                                   IsVisible="{CompiledBinding IsWindows}" />
-                        <Border Background="{StaticResource CheckeredBackgroundBrush}"
-                                Width="40"
-                                Height="25"
-                                CornerRadius="4"
-                                ToolTip.Tip="{CompiledBinding UIntAccentColor, Source={x:Static PleasantUiSettings.Instance}, Converter={x:Static UIntToHexConverter.Instance}}">
-                            <interactivity:Interaction.Behaviors>
-                                <behaviors:CommandOnDoubleTappedBehavior />
-                            </interactivity:Interaction.Behaviors>
-                            <Border
-                                Background="{CompiledBinding UIntAccentColor, Source={x:Static PleasantUiSettings.Instance}, Converter={x:Static GlobalConverters.UIntToBrush}}"
-                                CornerRadius="4" />
-                        </Border>
 
                         <Menu VerticalAlignment="Center"
                               Height="25">
@@ -155,7 +131,7 @@
                                 <MenuItem.Header>
                                     <Path Data="{StaticResource MoreRegular}"
                                           VerticalAlignment="Center"
-                                          Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                          Fill="{DynamicResource TextFillColor1}"
                                           Stretch="Uniform"
                                           Margin="5 0"
                                           Width="16" />
@@ -166,18 +142,17 @@
                                     <MenuItem.Icon>
                                         <Viewbox Width="16" Height="16">
                                             <Path Data="{StaticResource CopyRegular}"
-                                                  Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                  Fill="{DynamicResource TextFillColor1}"
                                                   Stretch="Uniform" />
                                         </Viewbox>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{StaticResource Paste}"
-                                          IsEnabled="{CompiledBinding !UseAccentColorFromSystem, Source={x:Static PleasantUiSettings.Instance}}"
                                           Command="{CompiledBinding PasteAccentColor}">
                                     <MenuItem.Icon>
                                         <Viewbox Width="16" Height="16">
                                             <Path Data="{StaticResource ClipboardPasteRegular}"
-                                                  Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                  Fill="{DynamicResource TextFillColor1}"
                                                   Stretch="Uniform" />
                                         </Viewbox>
                                     </MenuItem.Icon>
@@ -186,12 +161,11 @@
                                 <Separator />
 
                                 <MenuItem Header="{StaticResource Change}"
-                                          IsEnabled="{CompiledBinding !UseAccentColorFromSystem, Source={x:Static PleasantUiSettings.Instance}}"
                                           Command="{CompiledBinding ChangeAccentColor}">
                                     <MenuItem.Icon>
                                         <Viewbox Width="16" Height="16">
                                             <Path Data="{StaticResource EditRegular}"
-                                                  Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                  Fill="{DynamicResource TextFillColor1}"
                                                   Stretch="Uniform" />
                                         </Viewbox>
                                     </MenuItem.Icon>
@@ -220,18 +194,18 @@
                 </OptionsDisplayItem.ActionButton>
                 <OptionsDisplayItem.Content>
                     <StackPanel>
-                        <TextBlock Theme="{StaticResource SubtitleTextBlockTheme}"
+                        <TextBlock Theme="{DynamicResource SubtitleTextBlockTheme}"
                                    Text="{StaticResource CreatingATheme}"
                                    Margin="0 0 0 5" />
 
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <ComboBox PlaceholderText="{DynamicResource ThemeNotSelected}"
                                       MinWidth="250"
-                                      Items="{CompiledBinding Themes}"
+                                      ItemsSource="{CompiledBinding Themes}"
                                       SelectedItem="{CompiledBinding SelectedTheme}"
                                       IsVisible="{CompiledBinding !InRenameProcess}">
                                 <ComboBox.DataTemplates>
-                                    <DataTemplate DataType="media:Theme">
+                                    <DataTemplate DataType="models:CustomTheme">
                                         <TextBlock Text="{CompiledBinding Name}" />
                                     </DataTemplate>
                                 </ComboBox.DataTemplates>
@@ -242,12 +216,12 @@
                                      MinWidth="250"
                                      IsVisible="{CompiledBinding InRenameProcess}" />
 
-                            <Button Theme="{StaticResource AccentButtonTheme}"
+                            <Button Theme="{DynamicResource AccentButtonTheme}"
                                     IsVisible="{CompiledBinding InRenameProcess}"
                                     Command="{CompiledBinding ApplyRenameTheme}">
                                 <ToolTip.Tip>
                                     <TextBlock Text="{StaticResource Apply}"
-                                               Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                               Foreground="{DynamicResource TextFillColor1}"
                                                FontWeight="Normal" />
                                 </ToolTip.Tip>
                                 <Path Data="{StaticResource CheckmarkRegular}"
@@ -298,7 +272,7 @@
                                     <MenuItem.Header>
                                         <Path Data="{StaticResource MoreRegular}"
                                               VerticalAlignment="Center"
-                                              Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                              Fill="{DynamicResource TextFillColor1}"
                                               Stretch="Uniform"
                                               Margin="5 0"
                                               Width="16" />
@@ -310,7 +284,7 @@
                                         <MenuItem.Icon>
                                             <Viewbox Width="16" Height="16">
                                                 <Path Data="{StaticResource CopyRegular}"
-                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                      Fill="{DynamicResource TextFillColor1}"
                                                       Stretch="Uniform" />
                                             </Viewbox>
                                         </MenuItem.Icon>
@@ -322,7 +296,7 @@
                                         <MenuItem.Icon>
                                             <Viewbox Width="16" Height="16">
                                                 <Path Data="{StaticResource ClipboardPasteRegular}"
-                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                      Fill="{DynamicResource TextFillColor1}"
                                                       Stretch="Uniform" />
                                             </Viewbox>
                                         </MenuItem.Icon>
@@ -336,7 +310,7 @@
                         </StackPanel>
 
                         <Button Margin="0 5 0 0"
-                                Theme="{StaticResource DangerButtonTheme}"
+                                Theme="{DynamicResource DangerButtonTheme}"
                                 HorizontalAlignment="Left"
                                 IsEnabled="{CompiledBinding SelectedTheme, Converter={x:Static ObjectConverters.IsNotNull}}"
                                 Command="{CompiledBinding DeleteTheme}">
@@ -352,27 +326,21 @@
 
                         <Separator IsVisible="{CompiledBinding SelectedTheme, Converter={x:Static ObjectConverters.IsNotNull}}"
                                    Margin="-12 10 -12 0"
-                                   Background="{StaticResource CardStrokeColorDefaultBrush}" />
+                                   Background="{DynamicResource ControlBorderColor}" />
 
                         <Panel Margin="0 10" IsVisible="{CompiledBinding SelectedTheme, Converter={x:Static ObjectConverters.IsNotNull}}">
-                            <TextBlock Theme="{StaticResource SubtitleTextBlockTheme}"
+                            <TextBlock Theme="{DynamicResource SubtitleTextBlockTheme}"
                                        Text="{StaticResource Colors}" />
-                            
-                            <CheckBox VerticalAlignment="Center"
-                                      HorizontalAlignment="Right"
-                                      Content="{StaticResource MakeAccentColorLighter}"
-                                      IsChecked="{CompiledBinding SelectedTheme.LightnessAccentColor}" />
                         </Panel>
-                        
 
-                        <ItemsControl Items="{CompiledBinding SelectedTheme.Colors}">
+                        <ItemsControl ItemsSource="{CompiledBinding SelectedTheme.Colors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Spacing="10" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="other:KeyColor">
+                                <DataTemplate>
                                     <Panel>
                                         <TextBlock Text="{CompiledBinding Key}"
                                                    HorizontalAlignment="Left"
@@ -382,20 +350,6 @@
                                                     Orientation="Horizontal"
                                                     VerticalAlignment="Center"
                                                     Spacing="5">
-                                            <Border Background="{StaticResource CheckeredBackgroundBrush}"
-                                                    Width="40"
-                                                    Height="25"
-                                                    CornerRadius="4"
-                                                    ToolTip.Tip="{CompiledBinding Value, Converter={x:Static UIntToHexConverter.Instance}}">
-                                                <interactivity:Interaction.Behaviors>
-                                                    <behaviors:CommandOnDoubleTappedBehavior
-                                                        Command="{CompiledBinding $parent[pages:SettingsPage].ViewModel.CopyColor}"
-                                                        CommandParameter="{CompiledBinding}" />
-                                                </interactivity:Interaction.Behaviors>
-                                                <Border CornerRadius="4"
-                                                        Background="{CompiledBinding Value, Converter={x:Static GlobalConverters.UIntToBrush}}" />
-                                            </Border>
-
                                             <Menu VerticalAlignment="Center"
                                                   Height="25">
                                                 <MenuItem Width="30"
@@ -404,7 +358,7 @@
                                                     <MenuItem.Header>
                                                         <Path Data="{StaticResource MoreRegular}"
                                                               VerticalAlignment="Center"
-                                                              Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                              Fill="{DynamicResource TextFillColor1}"
                                                               Stretch="Uniform"
                                                               Margin="5 0"
                                                               Width="16" />
@@ -412,22 +366,22 @@
 
                                                     <MenuItem Header="{StaticResource Copy}"
                                                               Command="{CompiledBinding $parent[pages:SettingsPage].ViewModel.CopyColor}"
-                                                              CommandParameter="{CompiledBinding}">
+                                                              CommandParameter="{CompiledBinding Key}">
                                                         <MenuItem.Icon>
                                                             <Viewbox Width="16" Height="16">
                                                                 <Path Data="{StaticResource CopyRegular}"
-                                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                                      Fill="{DynamicResource TextFillColor1}"
                                                                       Stretch="Uniform" />
                                                             </Viewbox>
                                                         </MenuItem.Icon>
                                                     </MenuItem>
                                                     <MenuItem Header="{StaticResource Paste}"
                                                               Command="{CompiledBinding $parent[pages:SettingsPage].ViewModel.PasteColor}"
-                                                              CommandParameter="{CompiledBinding}">
+                                                              CommandParameter="{CompiledBinding Key}">
                                                         <MenuItem.Icon>
                                                             <Viewbox Width="16" Height="16">
                                                                 <Path Data="{StaticResource ClipboardPasteRegular}"
-                                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                                      Fill="{DynamicResource TextFillColor1}"
                                                                       Stretch="Uniform" />
                                                             </Viewbox>
                                                         </MenuItem.Icon>
@@ -437,11 +391,11 @@
 
                                                     <MenuItem Header="{StaticResource Change}"
                                                               Command="{CompiledBinding $parent[pages:SettingsPage].ViewModel.ChangeColor}"
-                                                              CommandParameter="{CompiledBinding}">
+                                                              CommandParameter="{CompiledBinding Key}">
                                                         <MenuItem.Icon>
                                                             <Viewbox Width="16" Height="16">
                                                                 <Path Data="{StaticResource EditRegular}"
-                                                                      Fill="{StaticResource TextFillColorPrimaryBrush}"
+                                                                      Fill="{DynamicResource TextFillColor1}"
                                                                       Stretch="Uniform" />
                                                             </Viewbox>
                                                         </MenuItem.Icon>

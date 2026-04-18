@@ -1,11 +1,12 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using PleasantUI.Controls;
+using PleasantUI.Core.Interfaces;
 using Regul.Managers;
 
 namespace Regul.Views.Windows;
 
-public class UserAgreementWindow : ContentDialog
+public partial class UserAgreementWindow : ContentDialog
 {
     public UserAgreementWindow()
     {
@@ -20,13 +21,13 @@ public class UserAgreementWindow : ContentDialog
 
         window.FindControl<Button>("YesButton").Click += (_, _) =>
         {
-            window.Close(true);
+            window.CloseAsync(true);
         };
         window.FindControl<Button>("NoButton").Click += (_, _) =>
         {
-            window.Close(false);
+            window.CloseAsync(false);
         };
 
-        return await window.Show<bool>(WindowsManager.MainWindow);
+        return await window.ShowAsync<bool>((IPleasantWindow)WindowsManager.MainWindow);
     }
 }

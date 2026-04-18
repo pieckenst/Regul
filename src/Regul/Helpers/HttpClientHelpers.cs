@@ -1,4 +1,4 @@
-﻿namespace Regul.Helpers;
+namespace Regul.Helpers;
 
 public static class HttpClientHelpers
 {

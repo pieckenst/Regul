@@ -1,4 +1,4 @@
-﻿using Avalonia.Collections;
+using Avalonia.Collections;
 using Avalonia.Styling;
 using McMaster.NETCore.Plugins;
 using Regul.ModuleSystem.Structures;

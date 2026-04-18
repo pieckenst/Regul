@@ -1,4 +1,4 @@
-﻿<ContentDialog xmlns="https://github.com/avaloniaui"
+<ContentDialog xmlns="https://github.com/avaloniaui"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,15 +19,15 @@
     </Design.DataContext>
 
     <DockPanel>
-        <TextBlock Theme="{StaticResource SubtitleTextBlockTheme}"
+        <TextBlock Theme="{DynamicResource SubtitleTextBlockTheme}"
                    Text="{StaticResource Instruments}"
                    Margin="20 15 0 0"
                    DockPanel.Dock="Top" />
 
         <Grid ColumnDefinitions="*,10,*" Margin="15 10 15 15">
             <Border Grid.Column="0"
-                    Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                    BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                    Background="{DynamicResource BackgroundColor1}"
+                    BorderBrush="{DynamicResource ControlBorderColor}"
                     BorderThickness="1"
                     CornerRadius="4">
                 <Grid RowDefinitions="Auto,*">
@@ -35,8 +35,8 @@
                             BorderThickness="0 0 0 1"
                             CornerRadius="5 5 0 0"
                             DockPanel.Dock="Top"
-                            BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
-                            Background="{StaticResource SolidBackgroundFillColorTertiaryBrush}">
+                            BorderBrush="{DynamicResource ControlBorderColor}"
+                            Background="{DynamicResource BackgroundColor3}">
                         <Panel Margin="5">
                             <InformationBlock HorizontalAlignment="Left"
                                               Icon="{StaticResource AppFolderRegular}"
@@ -45,14 +45,14 @@
 
                             <Button Padding="8 0"
                                     Classes="EnabledIconAnimation"
-                                    Theme="{StaticResource AppBarButtonTheme}"
+                                    Theme="{DynamicResource AppBarButtonTheme}"
                                     HorizontalAlignment="Right"
                                     ToolTip.Tip="{StaticResource Search}">
                                 <Button.Flyout>
                                     <Flyout Placement="Bottom" ShowMode="Transient">
                                         <Grid RowDefinitions="Auto,*,Auto" Width="200">
                                             <TextBlock Grid.Row="0"
-                                                       Theme="{StaticResource BodyStrongTextBlockTheme}"
+                                                       Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                                        Text="{StaticResource Search}"
                                                        HorizontalAlignment="Left"
                                                        VerticalAlignment="Center" Margin="10" />
@@ -75,14 +75,14 @@
                                             </DockPanel>
 
                                             <Border Grid.Row="2"
-                                                    Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                                                    BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                                                    Background="{DynamicResource BackgroundColor1}"
+                                                    BorderBrush="{DynamicResource ControlBorderColor}"
                                                     BorderThickness="0 1 0 0"
                                                     Height="40"
                                                     CornerRadius="0 0 8 8">
                                                 <ToggleButton HorizontalAlignment="Right"
                                                               Classes="EnabledIconAnimation"
-                                                              Theme="{StaticResource AppBarToggleButtonTheme}"
+                                                              Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                               IsChecked="{CompiledBinding InvertModuleList}"
                                                               Margin="5 3"
                                                               Padding="7">
@@ -90,7 +90,7 @@
                                                         <ToolTip>
                                                             <TextBlock Text="{StaticResource InvertList}"
                                                                        Opacity="1"
-                                                                       Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                                       Foreground="{DynamicResource TextFillColor1}"
                                                                        FontWeight="Normal" />
                                                         </ToolTip>
                                                     </ToolTip.Tip>
@@ -112,7 +112,7 @@
                     </Border>
 
                     <ListBox Grid.Row="1"
-                             Items="{CompiledBinding SortedModules}"
+                             ItemsSource="{CompiledBinding SortedModules}"
                              SelectedItem="{CompiledBinding SelectedModule}"
                              Padding="5"
                              ItemTemplate="{StaticResource ModuleListItemTemplate}"
@@ -121,15 +121,15 @@
                     <TextBlock Grid.Row="1"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
-                               Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                               Foreground="{DynamicResource TextFillColor3}"
                                Text="{StaticResource NotFound}"
                                IsVisible="{CompiledBinding !SortedModules.Count}" />
                 </Grid>
             </Border>
 
             <Border Grid.Column="2"
-                    Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                    BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                    Background="{DynamicResource BackgroundColor1}"
+                    BorderBrush="{DynamicResource ControlBorderColor}"
                     BorderThickness="1"
                     CornerRadius="4">
                 <Panel>
@@ -139,8 +139,8 @@
                                 CornerRadius="5 5 0 0"
                                 DockPanel.Dock="Top"
                                 IsVisible="{CompiledBinding SelectedModule, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
-                                Background="{StaticResource SolidBackgroundFillColorTertiaryBrush}">
+                                BorderBrush="{DynamicResource ControlBorderColor}"
+                                Background="{DynamicResource BackgroundColor3}">
                             <Panel Margin="5">
                                 <InformationBlock HorizontalAlignment="Left"
                                                   Icon="{StaticResource WrenchRegular}"
@@ -148,14 +148,14 @@
                                                   ToolTip.Tip="{StaticResource NumberOfToolsInTheModule}" />
 
                                 <Button Padding="8 0"
-                                        Theme="{StaticResource AppBarButtonTheme}"
+                                        Theme="{DynamicResource AppBarButtonTheme}"
                                         HorizontalAlignment="Right"
                                         ToolTip.Tip="{StaticResource Search}">
                                     <Button.Flyout>
                                         <Flyout Placement="Bottom" ShowMode="Transient">
                                             <Grid RowDefinitions="Auto,*,Auto" Width="200">
                                                 <TextBlock Grid.Row="0"
-                                                           Theme="{StaticResource BodyStrongTextBlockTheme}"
+                                                           Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                                            Text="{StaticResource Search}"
                                                            HorizontalAlignment="Left"
                                                            VerticalAlignment="Center" Margin="10" />
@@ -178,13 +178,13 @@
                                                 </DockPanel>
 
                                                 <Border Grid.Row="2"
-                                                        Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                                                        BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                                                        Background="{DynamicResource BackgroundColor1}"
+                                                        BorderBrush="{DynamicResource ControlBorderColor}"
                                                         BorderThickness="0 1 0 0"
                                                         Height="40"
                                                         CornerRadius="0 0 8 8">
                                                     <ToggleButton HorizontalAlignment="Right"
-                                                                  Theme="{StaticResource AppBarToggleButtonTheme}"
+                                                                  Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                                   IsChecked="{CompiledBinding InvertInstrumentList}"
                                                                   Margin="5 3"
                                                                   Padding="7">
@@ -192,7 +192,7 @@
                                                             <ToolTip>
                                                                 <TextBlock Text="{StaticResource InvertList}"
                                                                            Opacity="1"
-                                                                           Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                                           Foreground="{DynamicResource TextFillColor1}"
                                                                            FontWeight="Normal" />
                                                             </ToolTip>
                                                         </ToolTip.Tip>
@@ -214,7 +214,7 @@
                         </Border>
 
                         <ListBox Grid.Row="1"
-                                 Items="{CompiledBinding SortedInstruments}"
+                                 ItemsSource="{CompiledBinding SortedInstruments}"
                                  SelectedItem="{CompiledBinding SelectedInstrument}"
                                  Padding="5"
                                  ItemTemplate="{StaticResource InstrumentListItemTemplate}"
@@ -223,13 +223,13 @@
                         <TextBlock Grid.Row="1"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
-                                   Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                                   Foreground="{DynamicResource TextFillColor3}"
                                    Text="{StaticResource NotFound}">
                             <TextBlock.IsVisible>
                                 <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                    <CompiledBinding Path="!SortedInstruments.Count" />
-                                    <CompiledBinding Path="SelectedModule"
-                                                     Converter="{x:Static ObjectConverters.IsNotNull}" />
+                                    <Binding Path="!SortedInstruments.Count" />
+                                    <Binding Path="SelectedModule"
+                                             Converter="{x:Static ObjectConverters.IsNotNull}" />
                                 </MultiBinding>
                             </TextBlock.IsVisible>
                         </TextBlock>
@@ -238,7 +238,7 @@
                     <TextBlock Text="{StaticResource SelectModule}"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
-                               Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                               Foreground="{DynamicResource TextFillColor3}"
                                IsVisible="{CompiledBinding SelectedModule, Converter={x:Static ObjectConverters.IsNull}}" />
                 </Panel>
             </Border>
@@ -247,7 +247,7 @@
 
     <ContentDialog.BottomPanelContent>
         <UniformGrid Margin="15 0" Rows="1">
-            <Button Theme="{StaticResource AccentButtonTheme}"
+            <Button Theme="{DynamicResource AccentButtonTheme}"
                     IsEnabled="{CompiledBinding SelectedInstrument, Converter={x:Static ObjectConverters.IsNotNull}}"
                     Command="{CompiledBinding CloseWithInstrument}"
                     Content="{StaticResource Ok}"

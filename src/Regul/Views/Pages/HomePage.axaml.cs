@@ -1,10 +1,10 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
 namespace Regul.Views.Pages;
 
-public class HomePage : UserControl
+public partial class HomePage : UserControl
 {
     private readonly Button? _menuButton;
 

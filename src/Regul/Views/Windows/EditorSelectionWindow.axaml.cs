@@ -1,13 +1,14 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using PleasantUI.Controls;
+using PleasantUI.Core.Interfaces;
 using Regul.Managers;
 using Regul.ModuleSystem.Structures;
 using Regul.ViewModels.Windows;
 
 namespace Regul.Views.Windows;
 
-public class EditorSelectionWindow : ContentDialog
+public partial class EditorSelectionWindow : ContentDialog
 {
     public EditorSelectionWindow() => AvaloniaXamlLoader.Load(this);
 
@@ -34,7 +35,7 @@ public class EditorSelectionWindow : ContentDialog
 
         editorSelectionWindow.FindControl<ListBox>("ListBox")?.Focus();
 
-        Editor? editor = await editorSelectionWindow.Show<Editor?>(WindowsManager.MainWindow);
+        Editor? editor = await editorSelectionWindow.ShowAsync<Editor?>((IPleasantWindow)WindowsManager.MainWindow);
 
         return (editor, editor != null && (checkBox?.IsChecked ?? false));
     }

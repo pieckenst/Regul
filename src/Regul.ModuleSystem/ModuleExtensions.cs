@@ -1,4 +1,4 @@
-﻿using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
 using Regul.ModuleSystem.Structures;
 

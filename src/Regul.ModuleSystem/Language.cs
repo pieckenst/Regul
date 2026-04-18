@@ -1,4 +1,4 @@
-﻿namespace Regul.ModuleSystem;
+namespace Regul.ModuleSystem;
 
 /// <summary>
 /// Language structure
@@ -11,7 +11,7 @@ public struct Language
     ///     The first place should display the name in the selected language, and in brackets specify the English name.
     /// </para>
     /// <para>
-    ///     For example, Français (French)
+    ///     For example, Francais (French)
     /// </para>
     /// </summary>
     public string Name { get; }

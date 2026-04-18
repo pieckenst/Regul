@@ -1,8 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:enum="using:PleasantUI.Enums"
-             x:Class="Regul.App"
-             x:DataType="PleasantUiSettings">
+             x:Class="Regul.App">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,11 +15,34 @@
                 <!--Custom Controls-->
                 <ResourceInclude Source="/Controls/Resources/InformationBlock.axaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <DataTemplate x:Key="FontItemTemplate" DataType="{x:Type FontFamily}">
+                <TextBlock Text="{Binding Name}" FontFamily="{Binding}" />
+            </DataTemplate>
+            
+            <!-- SolidColorBrush wrappers for PleasantUI Color tokens -->
+            <SolidColorBrush x:Key="BackgroundColor1Brush" Color="{DynamicResource BackgroundColor1}" />
+            <SolidColorBrush x:Key="BackgroundColor2Brush" Color="{DynamicResource BackgroundColor2}" />
+            <SolidColorBrush x:Key="BackgroundColor3Brush" Color="{DynamicResource BackgroundColor3}" />
+            <SolidColorBrush x:Key="BackgroundColor4Brush" Color="{DynamicResource BackgroundColor4}" />
+            <SolidColorBrush x:Key="ControlFillColor1Brush" Color="{DynamicResource ControlFillColor1}" />
+            <SolidColorBrush x:Key="ControlFillColor2Brush" Color="{DynamicResource ControlFillColor2}" />
+            <SolidColorBrush x:Key="ControlFillColor3Brush" Color="{DynamicResource ControlFillColor3}" />
+            <SolidColorBrush x:Key="ControlBorderColorBrush" Color="{DynamicResource ControlBorderColor}" />
+            <SolidColorBrush x:Key="TextFillColor1Brush" Color="{DynamicResource TextFillColor1}" />
+            <SolidColorBrush x:Key="TextFillColor2Brush" Color="{DynamicResource TextFillColor2}" />
+            <SolidColorBrush x:Key="TextFillColor3Brush" Color="{DynamicResource TextFillColor3}" />
+            <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource AccentColor}" />
+            <SolidColorBrush x:Key="AccentLightColor1Brush" Color="{DynamicResource AccentLightColor1}" />
+            <SolidColorBrush x:Key="AccentLightColor2Brush" Color="{DynamicResource AccentLightColor2}" />
+            <SolidColorBrush x:Key="SystemFillColorCriticalBrush" Color="{DynamicResource SystemFillColorCritical}" />
+            <SolidColorBrush x:Key="SystemFillColorSuccessBrush" Color="{DynamicResource SystemFillColorSuccess}" />
+            <SolidColorBrush x:Key="SystemFillColorCautionBrush" Color="{DynamicResource SystemFillColorCaution}" />
         </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
-        <PleasantTheme Mode="{CompiledBinding ThemeMode, Source={x:Static PleasantUiSettings.Instance}, TargetNullValue={x:Static enum:PleasantThemeMode.Light}}" />
+        <PleasantTheme />
 
         <StyleInclude Source="avares://Regul.Assets/Localization/en.axaml" />
     </Application.Styles>

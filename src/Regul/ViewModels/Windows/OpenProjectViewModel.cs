@@ -1,8 +1,8 @@
-﻿using System.Collections.Specialized;
+using System.Reactive.Linq;
+using System.Collections.Specialized;
 using Avalonia.Collections;
 using PleasantUI;
-using PleasantUI.Extensions;
-using PleasantUI.Reactive;
+using ReactiveUI;
 using Regul.Managers;
 using Regul.ModuleSystem;
 using Regul.Structures;
@@ -10,7 +10,7 @@ using Regul.Views.Windows;
 
 namespace Regul.ViewModels.Windows;
 
-public class OpenProjectViewModel : ViewModelBase
+public class OpenProjectViewModel : ReactiveObject
 {
     private readonly OpenProjectWindow _openProjectWindow;
 
@@ -27,33 +27,33 @@ public class OpenProjectViewModel : ViewModelBase
     public string SearchName
     {
         get => _searchName;
-        set => RaiseAndSetIfChanged(ref _searchName, value);
+        set => this.RaiseAndSetIfChanged(ref _searchName, value);
     }
     public string SearchPath
     {
         get => _searchPath;
-        set => RaiseAndSetIfChanged(ref _searchPath, value);
+        set => this.RaiseAndSetIfChanged(ref _searchPath, value);
     }
     public string SearchEditor
     {
         get => _searchEditor;
-        set => RaiseAndSetIfChanged(ref _searchEditor, value);
+        set => this.RaiseAndSetIfChanged(ref _searchEditor, value);
     }
 
     public bool ReverseProjectList
     {
         get => _reverseProjectList;
-        set => RaiseAndSetIfChanged(ref _reverseProjectList, value);
+        set => this.RaiseAndSetIfChanged(ref _reverseProjectList, value);
     }
     public bool SortByAlphabetical
     {
         get => _sortByAlphabetical;
-        set => RaiseAndSetIfChanged(ref _sortByAlphabetical, value);
+        set => this.RaiseAndSetIfChanged(ref _sortByAlphabetical, value);
     }
     public bool SortByDateOfChange
     {
         get => _sortByDateOfChange;
-        set => RaiseAndSetIfChanged(ref _sortByDateOfChange, value);
+        set => this.RaiseAndSetIfChanged(ref _sortByDateOfChange, value);
     }
 
     public OpenProjectViewModel(OpenProjectWindow openProjectWindow)
@@ -113,11 +113,10 @@ public class OpenProjectViewModel : ViewModelBase
     public void OpenProject(Project project)
     {
         WindowsManager.MainWindow?.ViewModel.OpenProject(project);
-
-        _openProjectWindow.Close();
+        _openProjectWindow.CloseAsync();
     }
 
     public void DeleteProject(Project project) => ApplicationSettings.Current.Projects.Remove(project);
 
-    public void Close() => _openProjectWindow.Close();
+    public void Close() => _openProjectWindow.CloseAsync();
 }

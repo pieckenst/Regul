@@ -6,8 +6,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using PleasantUI;
 using PleasantUI.Controls;
-using PleasantUI.Enums;
-using PleasantUI.Windows;
+using PleasantUI.Controls.Chrome;
+using PleasantUI.Core.Interfaces;
+using PleasantUI.ToolKit;
 using Regul.Enums;
 using Regul.Helpers;
 using Regul.Managers;
@@ -19,12 +20,12 @@ using Regul.Views.Windows;
 
 namespace Regul.Views;
 
-public class MainWindow : PleasantWindow
+public partial class MainWindow : PleasantWindow
 {
     private DragAndDropWindow? _dragAndDropWindow;
 
 #if DEBUG
-    private bool _canGetAnException;
+    private bool _leftShiftHeld;
 #endif
 
     private bool _closing;
@@ -37,17 +38,8 @@ public class MainWindow : PleasantWindow
         AvaloniaXamlLoader.Load(this);
 
 #if DEBUG
-        KeyDown += (_, e) =>
-        {
-            if (e.Key == Key.LeftShift)
-                _canGetAnException = true;
-        };
-
-        KeyUp += (_, e) =>
-        {
-            if (e.Key == Key.LeftShift)
-                _canGetAnException = false;
-        };
+        KeyDown += OnDebugKeyDown;
+        KeyUp += OnDebugKeyUp;
 #endif
 
         MainWindowViewModel viewModel = new();
@@ -115,7 +107,7 @@ public class MainWindow : PleasantWindow
                 if (!workbench.IsDirty) continue;
                 
                 if (ViewModel.Content is not EditorsPage)
-                    WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), TitleBarType.ExtendedWithoutContent);
+                    WindowsManager.MainWindow?.ChangePage(typeof(EditorsPage), PleasantTitleBar.Type.ClassicExtended);
 
                 ViewModel.SelectedWorkbench = workbench;
                 
@@ -126,13 +118,12 @@ public class MainWindow : PleasantWindow
             }
 
             ApplicationSettings.Save();
-            PleasantUiSettings.Save();
 
             _closing = true;
 
 #if DEBUG
-            if (_canGetAnException)
-                throw new Exception("Debug exception");
+            if (_leftShiftHeld)
+                throw new Exception("Debug crash test (LeftShift on close) - Testing crash reporter functionality");
 #endif
 
             Close();
@@ -168,7 +159,7 @@ public class MainWindow : PleasantWindow
     {
         void DragLeave(object? s, DragEventArgs dragEventArgs)
         {
-            _dragAndDropWindow?.Close();
+            _dragAndDropWindow?.CloseAsync();
             _dragAndDropWindow = null;
         }
 
@@ -176,9 +167,9 @@ public class MainWindow : PleasantWindow
         {
             e.DragEffects &= DragDropEffects.Copy | DragDropEffects.Link;
 
-            if (e.Data.Contains(DataFormats.Files))
+            if (e.DataTransfer.Contains(DataFormat.File))
             {
-                IEnumerable<IStorageItem>? fileNames = e.Data.GetFiles();
+                IEnumerable<IStorageItem>? fileNames = ((IAsyncDataTransfer)e.DataTransfer).TryGetFilesAsync().GetAwaiter().GetResult();
 
                 if (fileNames is null) return;
 
@@ -193,14 +184,14 @@ public class MainWindow : PleasantWindow
                 return;
             }
 
-            _dragAndDropWindow.Show(this);
+            _dragAndDropWindow.ShowAsync((IPleasantWindow)this);
         }
 
         void Drop(object? s, DragEventArgs e)
         {
-            if (e.Data.Contains(DataFormats.Files))
+            if (e.DataTransfer.Contains(DataFormat.File))
             {
-                IEnumerable<IStorageItem>? files = e.Data.GetFiles();
+                IEnumerable<IStorageItem>? files = ((IAsyncDataTransfer)e.DataTransfer).TryGetFilesAsync().GetAwaiter().GetResult();
 
                 if (files is not null)
                 {
@@ -213,7 +204,7 @@ public class MainWindow : PleasantWindow
                 }
             }
 
-            _dragAndDropWindow?.Close();
+            _dragAndDropWindow?.CloseAsync();
             _dragAndDropWindow = null;
         }
 
@@ -239,13 +230,13 @@ public class MainWindow : PleasantWindow
         _notificationManager.Show(new Notification(titleValue, textValue, type, timeSpan));
     }
 
-    public void ChangePage(Type? pageType, TitleBarType titleBarType = TitleBarType.Classic)
+    public void ChangePage(Type? pageType, PleasantTitleBar.Type titleBarType = PleasantTitleBar.Type.Classic)
     {
         if (pageType is not null)
             ChangePage(Activator.CreateInstance(pageType), titleBarType);
     }
 
-    public void ChangePage(object? page, TitleBarType titleBarType = TitleBarType.Classic)
+    public void ChangePage(object? page, PleasantTitleBar.Type titleBarType = PleasantTitleBar.Type.Classic)
     {
         MainWindowViewModel viewModel = this.GetDataContext<MainWindowViewModel>();
         viewModel.Content = page;
@@ -261,7 +252,7 @@ public class MainWindow : PleasantWindow
         {
             Maximum = maximum
         };
-        ViewModel.LoadingWindow.Show(this);
+        ViewModel.LoadingWindow.ShowAsync((IPleasantWindow)this);
     }
 
     public bool LoadingIsOpened() => ViewModel.LoadingWindow is not null && !ViewModel.LoadingWindow.IsClosed;
@@ -279,5 +270,35 @@ public class MainWindow : PleasantWindow
         }, "");
     }
 
-    public void CloseLoading() => ViewModel.LoadingWindow?.Close();
+    public void CloseLoading() => ViewModel.LoadingWindow?.CloseAsync();
+
+#if DEBUG
+    private void OnDebugKeyDown(object? sender, KeyEventArgs e)
+    {
+        // Track LeftShift for crash-on-close
+        if (e.Key == Key.LeftShift)
+            _leftShiftHeld = true;
+
+        // Ctrl+Shift+Alt+F11 triggers an immediate crash for testing crash reporter
+        if (e.Key == Key.F11 && 
+            e.KeyModifiers.HasFlag(KeyModifiers.Control) && 
+            e.KeyModifiers.HasFlag(KeyModifiers.Shift) && 
+            e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            // If debugger is attached, show a message first
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                System.Diagnostics.Debug.WriteLine("[MainWindow] Triggering debug crash (Debugger attached)");
+            }
+            
+            throw new Exception("Debug crash test (Ctrl+Shift+Alt+F11) - Testing crash reporter functionality");
+        }
+    }
+
+    private void OnDebugKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.LeftShift)
+            _leftShiftHeld = false;
+    }
+#endif
 }

@@ -1,4 +1,4 @@
-﻿<ContentDialog xmlns="https://github.com/avaloniaui"
+<ContentDialog xmlns="https://github.com/avaloniaui"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -27,14 +27,14 @@
     <Grid RowDefinitions="Auto,*,Auto">
         <Grid ColumnDefinitions="Auto,*,Auto">
             <TextBlock Grid.Column="0"
-                       Theme="{StaticResource SubtitleTextBlockTheme}"
+                       Theme="{DynamicResource SubtitleTextBlockTheme}"
                        Text="{StaticResource SelectAnEditor}"
                        Margin="20 15 0 0"
                        DockPanel.Dock="Top" />
 
             <TextBlock Grid.Column="1"
                        x:Name="FileName"
-                       Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                       Foreground="{DynamicResource TextFillColor3}"
                        FontSize="12"
                        Text="File.txt"
                        Margin="10 15 10 0"
@@ -49,13 +49,13 @@
                 <Button VerticalAlignment="Center"
                         Classes="EnabledIconAnimation"
                         Padding="6"
-                        Theme="{StaticResource AppBarButtonTheme}"
+                        Theme="{DynamicResource AppBarButtonTheme}"
                         ToolTip.Tip="{StaticResource Search}">
                     <Button.Flyout>
                         <Flyout Placement="Bottom" ShowMode="Transient">
                             <Grid RowDefinitions="Auto,*,Auto" Width="200">
                                 <TextBlock Grid.Row="0"
-                                           Theme="{StaticResource BodyStrongTextBlockTheme}"
+                                           Theme="{DynamicResource BodyStrongTextBlockTheme}"
                                            Text="{StaticResource Search}"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center" Margin="10" />
@@ -77,14 +77,14 @@
                                 </DockPanel>
 
                                 <Border Grid.Row="2"
-                                        Background="{StaticResource SolidBackgroundFillColorBaseBrush}"
-                                        BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                                        Background="{DynamicResource BackgroundColor1}"
+                                        BorderBrush="{DynamicResource ControlBorderColor}"
                                         BorderThickness="0 1 0 0"
                                         Height="40"
                                         CornerRadius="0 0 8 8">
                                     <ToggleButton HorizontalAlignment="Right"
                                                   Classes="EnabledIconAnimation"
-                                                  Theme="{StaticResource AppBarToggleButtonTheme}"
+                                                  Theme="{DynamicResource AppBarToggleButtonTheme}"
                                                   IsChecked="{CompiledBinding InvertEditorList}"
                                                   Margin="5 3"
                                                   Padding="7">
@@ -92,7 +92,7 @@
                                             <ToolTip>
                                                 <TextBlock Text="{StaticResource InvertList}"
                                                            Opacity="1"
-                                                           Foreground="{StaticResource TextFillColorPrimaryBrush}"
+                                                           Foreground="{DynamicResource TextFillColor1}"
                                                            FontWeight="Normal" />
                                             </ToolTip>
                                         </ToolTip.Tip>
@@ -119,7 +119,7 @@
 
         <ListBox Grid.Row="1"
                  x:Name="ListBox"
-                 Items="{CompiledBinding SortedEditors}"
+                 ItemsSource="{CompiledBinding SortedEditors}"
                  SelectedItem="{CompiledBinding SelectedEditor}"
                  SelectionMode="AlwaysSelected"
                  Margin="0 5 0 0"
@@ -147,7 +147,7 @@
                    Text="{StaticResource NotFound}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                   Foreground="{DynamicResource TextFillColor3}"
                    IsVisible="{CompiledBinding !SortedEditors.Count}"
                    Margin="0 20" />
 
@@ -160,7 +160,7 @@
 
     <ContentDialog.BottomPanelContent>
         <UniformGrid Margin="15 0" Rows="1">
-            <Button Theme="{StaticResource AccentButtonTheme}"
+            <Button Theme="{DynamicResource AccentButtonTheme}"
                     Content="{StaticResource Ok}"
                     IsEnabled="{CompiledBinding SelectedEditor, Converter={x:Static ObjectConverters.IsNotNull}}"
                     VerticalAlignment="Center"

@@ -1,11 +1,12 @@
-﻿using Avalonia.Platform.Storage;
+using Avalonia.Platform.Storage;
 using PleasantUI;
 using PleasantUI.Controls;
+using ReactiveUI;
 using Regul.Logging;
 
 namespace Regul.ViewModels.Windows;
 
-public class LogWindowViewModel : ViewModelBase
+public class LogWindowViewModel : ReactiveObject
 {
     private readonly PleasantMiniWindow _window;
     private string _logs = string.Empty;
@@ -13,7 +14,7 @@ public class LogWindowViewModel : ViewModelBase
     public string Logs
     {
         get => _logs;
-        set => RaiseAndSetIfChanged(ref _logs, value);
+        set => this.RaiseAndSetIfChanged(ref _logs, value);
     }
 
     public LogWindowViewModel(PleasantMiniWindow window)

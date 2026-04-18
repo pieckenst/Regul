@@ -1,4 +1,4 @@
-﻿namespace Regul.Converters;
+namespace Regul.Converters;
 
 public class DictionaryToKeyColorConverter
 {

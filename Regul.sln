@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11612.153 insiders
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regul", "src\Regul\Regul.csproj", "{42002AA1-D9CC-4A23-B043-4640617F8FDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regul.Assets", "src\Regul.Assets\Regul.Assets.csproj", "{F8ED9BB2-E38D-4CFB-86AF-6FEBF03C8F2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regul.ModuleSystem", "src\Regul.ModuleSystem\Regul.ModuleSystem.csproj", "{C4DB3B06-8F20-4FF7-9AE8-C140AF15E485}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PleasantUI", "src\PleasantUI\PleasantUI.csproj", "{3765512B-4AC3-429B-A85E-1CB5287C792F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{6B58A46D-2629-495F-810E-BBADA031D9A4}"
 	ProjectSection(SolutionItems) = preProject
@@ -32,9 +33,8 @@ Global
 		{C4DB3B06-8F20-4FF7-9AE8-C140AF15E485}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4DB3B06-8F20-4FF7-9AE8-C140AF15E485}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4DB3B06-8F20-4FF7-9AE8-C140AF15E485}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3765512B-4AC3-429B-A85E-1CB5287C792F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3765512B-4AC3-429B-A85E-1CB5287C792F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3765512B-4AC3-429B-A85E-1CB5287C792F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3765512B-4AC3-429B-A85E-1CB5287C792F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

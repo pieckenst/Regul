@@ -1,4 +1,4 @@
-﻿using PleasantUI.Structures;
+using PleasantUI.Core.Structures;
 
 namespace Regul.Helpers;
 

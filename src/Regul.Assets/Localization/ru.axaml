@@ -188,7 +188,7 @@
         <v:String x:Key="EnableBlur">Включить размытие</v:String>
         <v:String x:Key="OpacityLevel">Уровень непрозрачности</v:String>
         <v:String x:Key="BlurType">Тип размытия</v:String>
-        <v:String x:Key="AccentColor">Акцентный цвет</v:String>
+        <v:String x:Key="AccentColorLabel">Акцентный цвет</v:String>
         <v:String x:Key="UseAccentFromSystem">Использовать акцентный цвет из системы</v:String>
         <v:String x:Key="ColorCopied">Цвет скопирован!</v:String>
 

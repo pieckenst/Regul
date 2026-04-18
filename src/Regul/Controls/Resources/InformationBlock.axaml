@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTheme x:Key="{x:Type InformationBlock}" TargetType="InformationBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -8,7 +8,7 @@
                 <Border Theme="{StaticResource BorderBlockInformationTheme}">
                     <StackPanel Orientation="Horizontal" Spacing="8" Margin="8 5">
                         <Path Data="{TemplateBinding Icon}"
-                              Fill="{StaticResource TextFillColorPrimaryBrush}"
+                              Fill="{DynamicResource TextFillColor1}"
                               Width="14"
                               VerticalAlignment="Center"
                               Stretch="Uniform" />

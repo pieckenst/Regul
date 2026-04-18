@@ -1,10 +1,10 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using PleasantUI.Controls;
 
 namespace Regul.Views.Windows;
 
-public class LoadingWindow : ContentDialog
+public partial class LoadingWindow : ContentDialog
 {
     private readonly TextBlock? _textBlock;
     private readonly ProgressBar? _progressBar;

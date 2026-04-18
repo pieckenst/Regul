@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TieredPGO>true</TieredPGO>
@@ -14,11 +14,15 @@
         <ApplicationIcon>..\Regul.Assets\icon.ico</ApplicationIcon>
     </PropertyGroup>
 
+    <!-- Enable console output in Debug builds -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
     <Import Project="..\..\build\Versions.props" />
     <Import Project="..\..\build\PlatformDependentCompilation.props" />
 
     <ItemGroup>
-        <ProjectReference Include="..\PleasantUI\PleasantUI.csproj" />
         <ProjectReference Include="..\Regul.Assets\Regul.Assets.csproj" />
         <ProjectReference Include="..\Regul.ModuleSystem\Regul.ModuleSystem.csproj" />
     </ItemGroup>
@@ -26,6 +30,12 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
         <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.HarfBuzz" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="ReactiveUI.Avalonia" Version="11.4.12" />
+        <PackageReference Include="PleasantUI" Version="5.2.2" />
+        <PackageReference Include="PleasantUI.DataGrid" Version="5.2.2" />
+        <PackageReference Include="PleasantUI.MaterialIcons" Version="5.2.2" />
+        <PackageReference Include="PleasantUI.ToolKit" Version="5.2.2" />
         <PackageReference Include="VirusTotalNet" Version="2.1.0" />
     </ItemGroup>
 

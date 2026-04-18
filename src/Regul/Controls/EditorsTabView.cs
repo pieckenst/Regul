@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 using PleasantUI.Controls;
@@ -9,9 +9,8 @@ using Regul.Views.Pages;
 
 namespace Regul.Controls;
 
-public class EditorsTabView : PleasantTabView, IStyleable
+public class EditorsTabView : PleasantTabView
 {
-    Type IStyleable.StyleKey => typeof(PleasantTabView);
 
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
     {

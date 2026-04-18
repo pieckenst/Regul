@@ -4,36 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Regul.ViewModels.Pages"
              xmlns:c="using:Regul.Views.SettingsContent"
+             xmlns:core="using:PleasantUI.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
              x:Class="Regul.Views.Pages.SettingsPage"
              x:DataType="vm:SettingsPageViewModel">
     <NavigationView x:Name="NavigationView"
-                    Header="{x:Null}"
                     IsOpen="False"
                     SelectionMode="AlwaysSelected"
                     BackButtonCommand="{CompiledBinding BackToPreviousContent}">
         <NavigationView.NotMakeOffsetForContentPanel>
             <MultiBinding Converter="{x:Static BoolConverters.Or}">
-                <CompiledBinding Path="!EnableCustomTitleBar" Source="{x:Static PleasantUiSettings.Instance}" />
+                <Binding Path="WindowSettings.EnableCustomTitleBar" Source="{x:Static core:PleasantSettings.Current}" Converter="{x:Static BoolConverters.Not}" />
             </MultiBinding>
         </NavigationView.NotMakeOffsetForContentPanel>
 
         <NavigationViewItem Header="{StaticResource General}"
                             Icon="{StaticResource SettingsRegular}"
-                            TypeContent="{x:Type c:GeneralSettingsContent}" />
+                            Content="{x:Type c:GeneralSettingsContent}" />
         <NavigationViewItem Header="{StaticResource Style}"
                             Margin="0 5"
                             Icon="{StaticResource ColorRegular}"
-                            TypeContent="{x:Type c:StyleSettingsContent}" />
+                            Content="{x:Type c:StyleSettingsContent}" />
         <NavigationViewItem Header="{StaticResource Modules}"
                             Icon="{StaticResource AppFolderRegular}"
-                            TypeContent="{x:Type c:ModulesSettingsContent}" />
+                            Content="{x:Type c:ModulesSettingsContent}" />
 
         <NavigationViewItem DockPanel.Dock="Bottom"
                             Margin="0 0 0 5"
                             Header="{StaticResource About}"
                             Icon="{StaticResource QuestionCircleRegular}"
-                            TypeContent="{x:Type c:AboutSettingsContent}" />
+                            Content="{x:Type c:AboutSettingsContent}" />
 
         <Panel />
     </NavigationView>

@@ -188,7 +188,7 @@
         <v:String x:Key="EnableBlur">Enable blur</v:String>
         <v:String x:Key="OpacityLevel">Opacity level</v:String>
         <v:String x:Key="BlurType">Blur type</v:String>
-        <v:String x:Key="AccentColor">Accent color</v:String>
+        <v:String x:Key="AccentColorLabel">Accent color</v:String>
         <v:String x:Key="UseAccentFromSystem">Use an accent color from system</v:String>
         <v:String x:Key="ColorCopied">Color copied!</v:String>
 

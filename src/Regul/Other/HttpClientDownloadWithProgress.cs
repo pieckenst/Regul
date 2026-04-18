@@ -1,4 +1,4 @@
-﻿namespace Regul.Other;
+namespace Regul.Other;
 
 public class HttpClientDownloadWithProgress : IDisposable
 {

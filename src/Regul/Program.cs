@@ -1,13 +1,9 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Win32;
-using PleasantUI;
+using ReactiveUI.Avalonia;
 using Regul.Logging;
-using Regul.Managers;
 using Regul.Other;
-using Regul.Structures;
 
 namespace Regul;
 
@@ -15,11 +11,61 @@ public static class Program
 {
     private static FileStream? _lockFile;
 
-    public static string[] Arguments { get; private set; } = null!;
+    public static string[] Arguments { get; private set; } = [];
+    public static bool IsCrashReport { get; private set; }
+    public static string CrashReportText { get; private set; } = string.Empty;
 
     [STAThread]
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
+#if DEBUG
+        // Pipe Debug.WriteLine to console in debug builds
+        Trace.Listeners.Add(new ConsoleTraceListener());
+#endif
+
+        Arguments = args;
+
+        // Check if launched as crash report viewer
+        if (args.Length >= 2 && args[0] == "--crash-report")
+        {
+            IsCrashReport = true;
+            CrashReportText = args.Length >= 2 ? Uri.UnescapeDataString(args[1]) : string.Empty;
+            Debug.WriteLine("[Program] Launching in crash report mode");
+            Debug.WriteLine($"[Program] Crash text length: {CrashReportText.Length}");
+            
+            // Load settings before showing crash reporter
+            ApplicationSettings.Load();
+            Debug.WriteLine("[Program] ApplicationSettings loaded in crash report mode");
+            
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            
+            // After crash reporter closes, check if restart was requested
+            Debug.WriteLine($"[Program] Crash reporter closed. RestartingApp: {ApplicationSettings.Current.RestartingApp}");
+            if (ApplicationSettings.Current.RestartingApp)
+            {
+                Debug.WriteLine("[Program] Restarting application from crash reporter...");
+                ApplicationSettings.Current.RestartingApp = false;
+                ApplicationSettings.Save();
+                
+                string exePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+                Debug.WriteLine($"[Program] Executable path: {exePath}");
+                
+                if (!string.IsNullOrEmpty(exePath))
+                {
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = exePath,
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
+                    Debug.WriteLine("[Program] New process started from crash reporter");
+                }
+            }
+            
+            return;
+        }
+
+        // Single-instance lock
         try
         {
             _lockFile = File.Open(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".lock"),
@@ -28,121 +74,121 @@ public static class Program
         }
         catch
         {
+            // Another instance is running — pass files to it
             if (!Directory.Exists(RegulDirectories.Cache))
                 Directory.CreateDirectory(RegulDirectories.Cache);
             if (!Directory.Exists(Path.Combine(RegulDirectories.Cache, "OpenFiles")))
                 Directory.CreateDirectory(Path.Combine(RegulDirectories.Cache, "OpenFiles"));
 
-            Guid guid = Guid.NewGuid();
-
             string newArgs = string.Join("|", args);
-
-            await File.WriteAllTextAsync(Path.Combine(RegulDirectories.Cache, "OpenFiles", guid + ".cache"), newArgs);
+            File.WriteAllText(Path.Combine(RegulDirectories.Cache, "OpenFiles", Guid.NewGuid() + ".cache"), newArgs);
 
             EventWaitHandle eventWaitHandle = new(false, EventResetMode.AutoReset, "Onebeld-Regul-MemoryMap-dG17tr7Nv3_BytesWritten");
             eventWaitHandle.Set();
-
             return;
         }
 
-        Arguments = args;
-
-        AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-        AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnProcessExit;
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => HandleUnhandledException("Non-UI", (Exception)e.ExceptionObject);
+        TaskScheduler.UnobservedTaskException += (_, e) => 
+        {
+            HandleUnhandledException("Task", e.Exception);
+            e.SetObserved(); // Mark as observed to prevent app termination before we handle it
+        };
+        AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+        {
+            _lockFile?.Unlock(0, 0);
+            _lockFile?.Dispose();
+        };
 
         ApplicationSettings.Load();
+        Debug.WriteLine("[Program] ApplicationSettings loaded");
 
-        AppBuilder mainAppBuilder = BuildAvaloniaApp();
-        mainAppBuilder.SetupWithoutStarting();
+        try
+        {
+            Debug.WriteLine("[Program] Starting Avalonia app");
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            Debug.WriteLine("[Program] Avalonia app exited normally");
+            
+            // Check if app should restart
+            Debug.WriteLine($"[Program] RestartingApp flag: {ApplicationSettings.Current.RestartingApp}");
+            if (ApplicationSettings.Current.RestartingApp)
+            {
+                Debug.WriteLine("[Program] Restarting application...");
+                ApplicationSettings.Current.RestartingApp = false;
+                ApplicationSettings.Save();
+                
+                string exePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+                Debug.WriteLine($"[Program] Executable path: {exePath}");
+                
+                if (!string.IsNullOrEmpty(exePath))
+                {
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = exePath,
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
+                    Debug.WriteLine("[Program] New process started");
+                }
+                else
+                {
+                    Debug.WriteLine("[Program] ERROR: Could not determine executable path");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine($"[Program] FATAL EXCEPTION: {e}");
+            HandleUnhandledException("Application", e);
+        }
+    }
 
-        while (true)
+    private static void HandleUnhandledException(string category, Exception ex)
+    {
+        Debug.WriteLine($"[Program] HandleUnhandledException category={category}");
+        Debug.WriteLine($"[Program] Exception: {ex}");
+        
+        try
+        {
+            Logger.Instance.WriteLog(LogType.Error, $"[Fatal {category} Error] {ex}\r\n");
+            Logger.Instance.SaveLogs();
+        }
+        catch { /* ignored */ }
+
+        if (!IsCrashReport)
         {
             try
             {
-                ClassicDesktopStyleApplicationLifetime lifeTime = mainAppBuilder.CreateLifeTime();
-                lifeTime.Start(args);
-                lifeTime.Dispose();
-
-                await App.UnloadModules();
-                break;
+                string exePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+                string crashText = Uri.EscapeDataString(ex.ToString());
+                
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = $"--crash-report \"{crashText}\"",
+                    UseShellExecute = true
+                };
+                
+                Process.Start(startInfo);
+                Debug.WriteLine("[Program] Crash reporter process started");
+                
+#if DEBUG
+                // In debug mode, wait a bit for the crash reporter to start before exiting
+                // This allows the debugger to remain attached to see what's happening
+                if (Debugger.IsAttached)
+                {
+                    Debug.WriteLine("[Program] Debugger attached - waiting 2 seconds before exit");
+                    Thread.Sleep(2000);
+                }
+#endif
             }
-            catch (Exception exception)
+            catch (Exception launchEx)
             {
-                Logger.Instance.WriteLog(LogType.Error, $"[{exception.TargetSite?.DeclaringType}.{exception.TargetSite?.Name}()] {exception}\r\n");
-
-                ApplicationSettings.Current.ExceptionCalled = true;
-                ApplicationSettings.Current.ExceptionText = exception.ToString();
-
-                foreach (Workbench workbench in WindowsManager.MainWindow?.ViewModel.Workbenches!)
-                {
-                    if (workbench.PathToFile is null || !workbench.IsDirty) continue;
-
-                    try
-                    {
-                        workbench.EditorViewModel?.Save();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Instance.WriteLog(LogType.Error, $"[{e.TargetSite?.DeclaringType}.{e.TargetSite?.Name}()] {e}\r\n");
-                    }
-                }
-
-                ClassicDesktopStyleApplicationLifetime currentLifeTime = (ClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
-                currentLifeTime.Shutdown();
-                currentLifeTime.Dispose();
-
-                ApplicationSettings.Save();
-                PleasantUiSettings.Save();
-
-                ClassicDesktopStyleApplicationLifetime lifeTime = mainAppBuilder.CreateLifeTime();
-                lifeTime.Start(args);
-
-                lifeTime.Dispose();
-
-                if (ApplicationSettings.Current.RestartingApp)
-                {
-                    ApplicationSettings.Current.ExceptionCalled = false;
-                    ApplicationSettings.Current.RestartingApp = false;
-                    ApplicationSettings.Current.ExceptionText = string.Empty;
-                    continue;
-                }
-
-                await App.UnloadModules();
-                return;
+                Debug.WriteLine($"[Program] Failed to launch crash reporter: {launchEx}");
             }
         }
 
-        return;
-    }
-    private static void CurrentDomainOnProcessExit(object? sender, EventArgs e)
-    {
-        _lockFile?.Unlock(0, 0);
-        _lockFile?.Dispose();
-    }
-
-    private static ClassicDesktopStyleApplicationLifetime CreateLifeTime(this AppBuilder appBuilder)
-    {
-        ClassicDesktopStyleApplicationLifetime lifeTime = new()
-        {
-            ShutdownMode = ShutdownMode.OnMainWindowClose
-        };
-        appBuilder.Instance!.ApplicationLifetime = lifeTime;
-        appBuilder.Instance.OnFrameworkInitializationCompleted();
-
-        return lifeTime;
-    }
-
-    private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-    {
-        _lockFile?.Unlock(0, 0);
-        _lockFile?.Dispose();
-
-        string path = Logger.Instance.SaveLogs();
-
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = path, UseShellExecute = true
-        });
+        Environment.Exit(-1);
     }
 
     public static AppBuilder BuildAvaloniaApp()
@@ -153,41 +199,31 @@ public static class Program
 
     public static AppBuilder ConfigureAppBuilder(this AppBuilder appBuilder)
     {
-        appBuilder.UseSkia();
+        appBuilder.UseSkia().UseHarfBuzz().UseReactiveUI(_ => { });
 
 #if Windows
         appBuilder.UseWin32()
             .With(new AngleOptions
             {
-                AllowedPlatformApis = new List<AngleOptions.PlatformApi>
-                {
-                    AngleOptions.PlatformApi.DirectX11
-                }
-            });
-#else
-            appBuilder.UsePlatformDetect();
-#endif
-
-        appBuilder
-#if Windows
+                AllowedPlatformApis = [AngleOptions.PlatformApi.DirectX11]
+            })
             .With(new Win32PlatformOptions
             {
-                AllowEglInitialization = ApplicationSettings.Current.HardwareAcceleration,
-                OverlayPopups = true,
-                UseWgl = false,
-                UseWindowsUIComposition = true
+                OverlayPopups = true
             });
 #elif OSX
+        appBuilder.UsePlatformDetect()
             .With(new MacOSPlatformOptions
             {
                 DisableDefaultApplicationMenuItems = true,
                 ShowInDock = false
             });
 #else
+        appBuilder.UsePlatformDetect()
             .With(new AvaloniaNativePlatformOptions
-			{
+            {
                 UseGpu = ApplicationSettings.Current.HardwareAcceleration,
-			});
+            });
 #endif
 
 #if DEBUG

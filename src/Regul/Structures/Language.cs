@@ -1,4 +1,4 @@
-﻿namespace Regul.Structures;
+namespace Regul.Structures;
 
 public struct Language
 {

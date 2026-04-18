@@ -1,10 +1,10 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
 namespace Regul.Views.SettingsContent;
 
-public class AboutSettingsContent : UserControl
+public partial class AboutSettingsContent : UserControl
 {
     private readonly Button? _contactTheAuthorButton;
 
